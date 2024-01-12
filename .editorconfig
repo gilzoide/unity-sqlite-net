@@ -8,4 +8,7 @@ trim_trailing_whitespace = true
 [*.{asmdef,cs}]
 indent_style = space
 indent_size = 4
+
+[*.config]
+indent_style = tab
 indent_size = 4
