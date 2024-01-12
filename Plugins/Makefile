@@ -31,6 +31,8 @@ BUILD_DIRS = \
 	build/webgl
 
 SQLITE_SRC = sqlite-amalgamation-3440200~/sqlite3.c
+SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
+SQLITE_NET_DEST = sqlite-net
 
 $(BUILD_DIRS):
 	mkdir -p $@
@@ -111,6 +113,9 @@ android-x86_64: build/android/x86_64/libsqlite3.so
 android-x86: build/android/x86/libsqlite3.so
 
 webgl: build/webgl/libsqlite3.bc
+
+source: $(SQLITE_NET_SRC)
+	cp $^ $(SQLITE_NET_DEST)
 
 all-android: android-arm64 android-arm32 android-x86_64 android-x86
 all-apple: macos-universal ios-universal tvos-universal visionos-universal
