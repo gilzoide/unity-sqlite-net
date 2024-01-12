@@ -105,7 +105,7 @@ windows-mingw-x86: CC = i686-w64-mingw32-gcc
 windows-mingw-x86: LINKFLAGS += -static-libgcc
 windows-mingw-x86: lib/windows/x86/sqlite3.dll
 
-linux-x86_64: lib/linux/x86_64/libsqlite3
+linux-x86_64: lib/linux/x86_64/libsqlite3.so
 
 macos-universal: lib/macos/libsqlite3.dylib
 ios-universal: lib/ios/libsqlite3.dylib

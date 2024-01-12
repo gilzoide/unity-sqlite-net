@@ -7,7 +7,7 @@ Check out [SQLite-net's Wiki](https://github.com/praeclarum/sqlite-net/wiki) for
 ## Features
 - No extra installation steps: just download this package and that's it
 - [SQLite-net v1.8.116](https://github.com/praeclarum/sqlite-net/tree/v1.8.116): both synchronous and asynchronous APIs are available
-- [SQLite 3.44.2](https://sqlite.org/releaselog/3_44_2.html) prebuilt for the following platforms: Windows, macOS, iOS, tvOS, Android and WebGL
+- [SQLite 3.44.2](https://sqlite.org/releaselog/3_44_2.html) prebuilt for the following platforms: Windows, Linux, macOS, iOS, tvOS, Android and WebGL
 
 
 ## How to install
