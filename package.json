@@ -1,0 +1,11 @@
+{
+  "name": "com.gilzoide.sqlite-net",
+  "displayName": "SQLite-net",
+  "version": "1.0.0-preview1",
+  "description": "SQLite-net packaged for Unity",
+  "homepage": "https://github.com/gilzoide/unity-sqlite-net",
+  "license": "Unlicense",
+  "author": {
+    "name": "Gil Barbosa Reis"
+  }
+}
