@@ -10,7 +10,6 @@ endif
 # SQLite recommended defines + USE_URI. Reference: https://www.sqlite.org/compile.html
 CFLAGS += \
 	-DSQLITE_DQS=0 \
-	-DSQLITE_THREADSAFE=0 \
 	-DSQLITE_DEFAULT_MEMSTATUS=0 \
 	-DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
 	-DSQLITE_LIKE_DOESNT_MATCH_BLOBS \
