@@ -1,0 +1,10 @@
+/const string LibraryPath/ {
+	i\
+#if UNITY_WEBGL && !UNITY_EDITOR
+	i\
+		const string LibraryPath = "__Internal";
+	i\
+#else
+	a\
+#endif
+}

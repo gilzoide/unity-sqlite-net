@@ -84,8 +84,15 @@ lib/android/x86_64/libsqlite3.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains
 lib/android/x86/libsqlite3.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android19-clang)
 
 # WebGL
-lib/webgl/libsqlite3.bc: $(SQLITE_SRC) src~/sqlite3.c | lib/webgl
+lib/webgl/libsqlite3.bc: $(SQLITE_SRC) | lib/webgl
 	$(EMCC) -o $@ $< $(CFLAGS) -c -emit-llvm
+
+# Source
+sqlite-net/%.cs: sqlite-net~/src/%.cs
+	cat $< | sed -f fix-library-path.sed~ > $@
+
+sqlite-net/License.txt: sqlite-net~/License.txt
+	cp $< $@
 
 # Targets
 windows-x86_64: lib/windows/x86_64/sqlite3.dll
@@ -113,8 +120,7 @@ android-x86: lib/android/x86/libsqlite3.so
 
 webgl: lib/webgl/libsqlite3.bc
 
-source: $(SQLITE_NET_SRC)
-	cp $^ $(SQLITE_NET_DEST)
+source: sqlite-net/License.txt sqlite-net/AssemblyInfo.cs sqlite-net/SQLite.cs sqlite-net/SQLiteAsync.cs
 
 all-android: android-arm64 android-arm32 android-x86_64 android-x86
 all-apple: macos-universal ios-universal tvos-universal visionos-universal

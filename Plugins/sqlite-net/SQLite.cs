@@ -4442,7 +4442,11 @@ namespace SQLite
 			Serialized = 3
 		}
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+		const string LibraryPath = "__Internal";
+#else
 		const string LibraryPath = "sqlite3";
+#endif
 
 #if !USE_CSHARP_SQLITE && !USE_WP8_NATIVE_SQLITE && !USE_SQLITEPCL_RAW
 		[DllImport(LibraryPath, EntryPoint = "sqlite3_threadsafe", CallingConvention=CallingConvention.Cdecl)]
