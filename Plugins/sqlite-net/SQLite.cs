@@ -2089,7 +2089,7 @@ namespace SQLite
 			Dispose (false);
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Dispose (true);
 			GC.SuppressFinalize (this);
@@ -3649,7 +3649,7 @@ namespace SQLite
 			}
 		}
 
-		public void Dispose ()
+		public virtual void Dispose ()
 		{
 			Dispose (true);
 			GC.SuppressFinalize (this);

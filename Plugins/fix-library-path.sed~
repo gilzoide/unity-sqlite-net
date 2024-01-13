@@ -1,3 +1,4 @@
+# Use "__Internal" library path in WebGL builds
 /const string LibraryPath/ {
 	s/const string/public const string/
 	i\
@@ -9,3 +10,6 @@
 	a\
 #endif
 }
+
+# Make SQLiteConnection.Dispose virtual
+s/public void Dispose/public virtual void Dispose/
