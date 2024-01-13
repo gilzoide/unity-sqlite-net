@@ -85,5 +85,8 @@ public class TestSQLite : MonoBehaviour
 ```
 
 
-## Modifications made to SQLite-net
-The only modification made to SQLite-net source code is the value of `LibraryPath` used in WebGL builds, which is set to `__Internal` instead of the default value of `sqlite3`.
+## Modifications made to SQLite-net source code
+- The value of `LibraryPath` used in WebGL builds is set to `__Internal` instead of `sqlite3`.
+  This is necessary because the native library is statically linked to the built player.
+- `LibraryPath` is made public instead of private.
+  This may be useful for libraries that want to bind additional native SQLite functions via P/Invoke.
