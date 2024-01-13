@@ -86,7 +86,9 @@ public class TestSQLite : MonoBehaviour
 
 
 ## Modifications made to SQLite-net source code
-- The value of `LibraryPath` used in WebGL builds is set to `__Internal` instead of `sqlite3`.
-  This is necessary because the native library is statically linked to the built player.
+- The value of `LibraryPath` was changed from `sqlite3` to `__Internal` in WebGL builds and `gilzoide-sqlite-net` for other platforms.
+  This makes sure the prebuilt libraries are used instead of the ones provided by the system.
 - `LibraryPath` is made public instead of private.
   This may be useful for libraries that want to bind additional native SQLite functions via P/Invoke.
+- `SQLiteConnection.Dispose` is made virtual.
+  This is useful for disposable subclasses that may have custom `Dispose` methods, for example SQLite connections using custom VFSes.
