@@ -1,6 +1,9 @@
-# Use "__Internal" library path in WebGL builds
 /const string LibraryPath/ {
+	# Make LibraryPath public
 	s/const string/public const string/
+	# Rename native library "sqlite3" -> "gilzoide-sqlite-net"
+	s/sqlite3/gilzoide-sqlite-net/
+	# Use "__Internal" library path in WebGL builds
 	i\
 #if UNITY_WEBGL && !UNITY_EDITOR
 	i\

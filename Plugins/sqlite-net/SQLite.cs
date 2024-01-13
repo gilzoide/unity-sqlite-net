@@ -4445,7 +4445,7 @@ namespace SQLite
 #if UNITY_WEBGL && !UNITY_EDITOR
 		public const string LibraryPath = "__Internal";
 #else
-		public const string LibraryPath = "sqlite3";
+		public const string LibraryPath = "gilzoide-sqlite-net";
 #endif
 
 #if !USE_CSHARP_SQLITE && !USE_WP8_NATIVE_SQLITE && !USE_SQLITEPCL_RAW
