@@ -349,7 +349,7 @@ namespace SQLite
 		/// </summary>
 		/// <returns>The quoted string.</returns>
 		/// <param name="unsafeString">The unsafe string to quote.</param>
-		static string Quote (string unsafeString)
+		public static string Quote (string unsafeString)
 		{
 			// TODO: Doesn't call sqlite3_mprintf("%Q", u) because we're waiting on https://github.com/ericsink/SQLitePCL.raw/issues/153
 			if (unsafeString == null)
