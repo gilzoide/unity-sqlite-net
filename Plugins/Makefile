@@ -36,54 +36,54 @@ $(BUILD_DIRS):
 	mkdir -p $@
 
 # Windows
-lib/windows/%/sqlite3.dll: LINKFLAGS += -shared
-lib/windows/%/sqlite3.dll: $(SQLITE_SRC) | lib/windows/%
+lib/windows/%/gilzoide-sqlite-net.dll: LINKFLAGS += -shared
+lib/windows/%/gilzoide-sqlite-net.dll: $(SQLITE_SRC) | lib/windows/%
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
 # Linux
-lib/linux/%/libsqlite3.so: CFLAGS += -fPIC
-lib/linux/%/libsqlite3.so: LINKFLAGS += -shared
-lib/linux/%/libsqlite3.so: $(SQLITE_SRC) | lib/linux/%
+lib/linux/%/gilzoide-sqlite-net.so: CFLAGS += -fPIC
+lib/linux/%/gilzoide-sqlite-net.so: LINKFLAGS += -shared
+lib/linux/%/gilzoide-sqlite-net.so: $(SQLITE_SRC) | lib/linux/%
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
 # macOS
-lib/macos/libsqlite3.dylib: CFLAGS += -arch arm64 -arch x86_64 -isysroot $(shell xcrun --show-sdk-path --sdk macosx)
-lib/macos/libsqlite3.dylib: LINKFLAGS += -shared
-lib/macos/libsqlite3.dylib: $(SQLITE_SRC) | lib/macos
+lib/macos/gilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isysroot $(shell xcrun --show-sdk-path --sdk macosx)
+lib/macos/gilzoide-sqlite-net.dylib: LINKFLAGS += -shared
+lib/macos/gilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/macos
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
 # iOS
-lib/ios/libsqlite3.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk iphoneos)
-lib/ios/libsqlite3.dylib: LINKFLAGS += -shared
-lib/ios/libsqlite3.dylib: $(SQLITE_SRC) | lib/ios
+lib/ios/gilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk iphoneos)
+lib/ios/gilzoide-sqlite-net.dylib: LINKFLAGS += -shared
+lib/ios/gilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/ios
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
 # tvOS
-lib/tvos/libsqlite3.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk appletvos)
-lib/tvos/libsqlite3.dylib: LINKFLAGS += -shared
-lib/tvos/libsqlite3.dylib: $(SQLITE_SRC) | lib/tvos
+lib/tvos/gilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk appletvos)
+lib/tvos/gilzoide-sqlite-net.dylib: LINKFLAGS += -shared
+lib/tvos/gilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/tvos
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
 # visionOS
-lib/visionos/libsqlite3.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk xros)
-lib/visionos/libsqlite3.dylib: LINKFLAGS += -shared
-lib/visionos/libsqlite3.dylib: $(SQLITE_SRC) | lib/visionos
+lib/visionos/gilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk xros)
+lib/visionos/gilzoide-sqlite-net.dylib: LINKFLAGS += -shared
+lib/visionos/gilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/visionos
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
 
 # Android
-lib/android/%/libsqlite3.so: CFLAGS += -fPIC
-lib/android/%/libsqlite3.so: LINKFLAGS += -shared
-lib/android/%/libsqlite3.so: $(SQLITE_SRC) | lib/android/%
+lib/android/%/gilzoide-sqlite-net.so: CFLAGS += -fPIC
+lib/android/%/gilzoide-sqlite-net.so: LINKFLAGS += -shared
+lib/android/%/gilzoide-sqlite-net.so: $(SQLITE_SRC) | lib/android/%
 	$(CC) -o $@ $< $(CFLAGS) $(LINKFLAGS)
 
-lib/android/arm64/libsqlite3.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/aarch64-linux-android21-clang)
-lib/android/arm32/libsqlite3.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/armv7a-linux-androideabi19-clang)
-lib/android/x86_64/libsqlite3.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/x86_64-linux-android21-clang)
-lib/android/x86/libsqlite3.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android19-clang)
+lib/android/arm64/gilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/aarch64-linux-android21-clang)
+lib/android/arm32/gilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/armv7a-linux-androideabi19-clang)
+lib/android/x86_64/gilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/x86_64-linux-android21-clang)
+lib/android/x86/gilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android19-clang)
 
 # WebGL
-lib/webgl/libsqlite3.bc: $(SQLITE_SRC) | lib/webgl
+lib/webgl/gilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
 	$(EMCC) -o $@ $< $(CFLAGS) -c -emit-llvm
 
 # Source
@@ -94,30 +94,30 @@ sqlite-net/License.txt: sqlite-net~/License.txt
 	cp $< $@
 
 # Targets
-windows-x86_64: lib/windows/x86_64/sqlite3.dll
-windows-x86: lib/windows/x86/sqlite3.dll
+windows-x86_64: lib/windows/x86_64/gilzoide-sqlite-net.dll
+windows-x86: lib/windows/x86/gilzoide-sqlite-net.dll
 
 windows-mingw-x86_64: CC = x86_64-w64-mingw32-gcc
 windows-mingw-x86_64: LINKFLAGS += -static-libgcc
-windows-mingw-x86_64: lib/windows/x86_64/sqlite3.dll
+windows-mingw-x86_64: lib/windows/x86_64/gilzoide-sqlite-net.dll
 
 windows-mingw-x86: CC = i686-w64-mingw32-gcc
 windows-mingw-x86: LINKFLAGS += -static-libgcc
-windows-mingw-x86: lib/windows/x86/sqlite3.dll
+windows-mingw-x86: lib/windows/x86/gilzoide-sqlite-net.dll
 
-linux-x86_64: lib/linux/x86_64/libsqlite3.so
+linux-x86_64: lib/linux/x86_64/gilzoide-sqlite-net.so
 
-macos-universal: lib/macos/libsqlite3.dylib
-ios-universal: lib/ios/libsqlite3.dylib
-tvos-universal: lib/tvos/libsqlite3.dylib
-visionos-universal: lib/visionos/libsqlite3.dylib
+macos-universal: lib/macos/gilzoide-sqlite-net.dylib
+ios-universal: lib/ios/gilzoide-sqlite-net.dylib
+tvos-universal: lib/tvos/gilzoide-sqlite-net.dylib
+visionos-universal: lib/visionos/gilzoide-sqlite-net.dylib
 
-android-arm64: lib/android/arm64/libsqlite3.so
-android-arm32: lib/android/arm32/libsqlite3.so
-android-x86_64: lib/android/x86_64/libsqlite3.so
-android-x86: lib/android/x86/libsqlite3.so
+android-arm64: lib/android/arm64/gilzoide-sqlite-net.so
+android-arm32: lib/android/arm32/gilzoide-sqlite-net.so
+android-x86_64: lib/android/x86_64/gilzoide-sqlite-net.so
+android-x86: lib/android/x86/gilzoide-sqlite-net.so
 
-webgl: lib/webgl/libsqlite3.bc
+webgl: lib/webgl/gilzoide-sqlite-net.bc
 
 source: sqlite-net/License.txt sqlite-net/AssemblyInfo.cs sqlite-net/SQLite.cs sqlite-net/SQLiteAsync.cs
 
