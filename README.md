@@ -90,7 +90,5 @@ public class TestSQLite : MonoBehaviour
   This makes sure the prebuilt libraries are used instead of the ones provided by the system.
 - `LibraryPath` is made public.
   This is useful for libraries that want to bind additional native SQLite functions via P/Invoke.
-- `SQLiteConnection.Dispose` is made virtual.
-  This is useful for disposable subclasses that may have custom `Dispose` methods, for example SQLite connections using custom VFSes.
 - `SQLiteConnection.Quote` is made public.
   This is be useful for libraries making raw queries.
