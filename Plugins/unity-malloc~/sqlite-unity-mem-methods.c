@@ -8,13 +8,13 @@ static IUnityMemoryManager *memory_manager = NULL;
 static UnityAllocator *allocator = NULL;
 
 #define ALIGNMENT \
-	(sizeof(size_t))
+	(sizeof(void *))
 
 #define GET_BASE_PTR(ptr) \
 	(((size_t *) ptr) - 1)
 
 static void *xMalloc(int size) {
-	size_t *allocation = (size_t *) memory_manager->Allocate(allocator, size + sizeof(size_t), ALIGNMENT, __FILE__, __LINE__);
+	size_t *allocation = (size_t *) memory_manager->Allocate(allocator, sizeof(size_t) + size, ALIGNMENT, __FILE__, __LINE__);
 	*allocation = size;
 	return allocation + 1;
 }
@@ -24,7 +24,7 @@ static void xFree(void *ptr) {
 }
 
 static void *xRealloc(void *ptr, int new_size) {
-	size_t *allocation = (size_t *) memory_manager->Reallocate(allocator, GET_BASE_PTR(ptr), new_size, ALIGNMENT, __FILE__, __LINE__);
+	size_t *allocation = (size_t *) memory_manager->Reallocate(allocator, GET_BASE_PTR(ptr), sizeof(size_t) + new_size, ALIGNMENT, __FILE__, __LINE__);
 	if (allocation == NULL) {
 		return NULL;
 	}
