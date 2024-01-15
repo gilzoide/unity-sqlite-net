@@ -7,7 +7,7 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
 ## Features
 - [SQLite-net v1.8.116](https://github.com/praeclarum/sqlite-net/tree/v1.8.116): both synchronous and asynchronous APIs are available
 - [SQLite 3.44.2](https://sqlite.org/releaselog/3_44_2.html) prebuilt for the following platforms: Windows, Linux, macOS, iOS, tvOS, visionOS, Android and WebGL
-- Uses Unity Memory Manager for tracking native allocations in Memory Profiler with the area name `SQLite-net`
+- Uses Unity Memory Manager for tracking native allocations in Memory Profiler with the area name `SQLite-net` (Unity 2022.2+ only)
 
 
 ## How to install
