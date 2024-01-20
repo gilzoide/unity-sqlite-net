@@ -100,6 +100,9 @@ void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces
 			DEBUG_LOG("[SQLite-net] SQLITE_CONFIG_MALLOC initialized");
 		}
 	}
+
+	sqlite3_initialize();
+	DEBUG_LOG("[SQLite-net] SQLite initialized");
 }
 
 void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload() {
