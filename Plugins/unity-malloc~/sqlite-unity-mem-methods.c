@@ -8,14 +8,16 @@ static IUnityMemoryManager *memory_manager = NULL;
 static UnityAllocator *allocator = NULL;
 
 #define ALIGNMENT \
-	(sizeof(void *))
+	(8)
+
+#define ROUND8(x)     (((x)+7)&~7)
 
 #define GET_BASE_PTR(ptr) \
-	(((size_t *) ptr) - 1)
+	(((int64_t *) ptr) - 1)
 
 static void *xMalloc(int size) {
-	size_t *allocation = (size_t *) memory_manager->Allocate(allocator, sizeof(size_t) + size, ALIGNMENT, __FILE__, __LINE__);
-	*allocation = size;
+	int64_t *allocation = (int64_t *) memory_manager->Allocate(allocator, sizeof(int64_t) + size, ALIGNMENT, __FILE__, __LINE__);
+	allocation[0] = size;
 	return allocation + 1;
 }
 
@@ -24,12 +26,12 @@ static void xFree(void *ptr) {
 }
 
 static void *xRealloc(void *ptr, int new_size) {
-	size_t *allocation = (size_t *) memory_manager->Reallocate(allocator, GET_BASE_PTR(ptr), sizeof(size_t) + new_size, ALIGNMENT, __FILE__, __LINE__);
+	int64_t *allocation = (int64_t *) memory_manager->Reallocate(allocator, GET_BASE_PTR(ptr), sizeof(int64_t) + new_size, ALIGNMENT, __FILE__, __LINE__);
 	if (allocation == NULL) {
 		return NULL;
 	}
 	else {
-		*allocation = new_size;
+		allocation[0] = new_size;
 		return allocation + 1;
 	}
 }
@@ -39,13 +41,7 @@ static int xSize(void *ptr) {
 }
 
 static int xRoundup(int value) {
-	int unaligned_bytes = value % ALIGNMENT;
-	if (unaligned_bytes == 0) {
-		return value;
-	}
-	else {
-		return value + ALIGNMENT - unaligned_bytes;
-	}
+	return ROUND8(value);
 }
 
 static int xInit(void *_) {
