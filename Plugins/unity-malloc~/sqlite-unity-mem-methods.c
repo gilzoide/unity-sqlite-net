@@ -2,10 +2,25 @@
 
 #include "../sqlite-amalgamation-3440200~/sqlite3.h"
 #include "IUnityInterface.h"
+#include "IUnityLog.h"
 #include "IUnityMemoryManager.h"
 
+static IUnityLog *logger = NULL;
 static IUnityMemoryManager *memory_manager = NULL;
 static UnityAllocator *allocator = NULL;
+
+#if DEBUG
+	#include <stdio.h>
+	static char _msg[1024];
+	#define DEBUG_LOG(format, ...) \
+		if (logger != NULL) { sprintf(_msg, format, ##__VA_ARGS__); UNITY_LOG(logger, _msg); }
+#else
+	#define DEBUG_LOG(...)
+#endif
+
+void xLogError(void *userdata, int error_code, const char *message) {
+	UNITY_LOG_ERROR(logger, message);
+}
 
 #define ALIGNMENT \
 	(8)
@@ -63,13 +78,28 @@ static sqlite3_mem_methods mem_methods = {
 };
 
 void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces * unityInterfaces) {
-	memory_manager = UNITY_GET_INTERFACE(unityInterfaces, IUnityMemoryManager);
-	if (memory_manager == NULL) {
-		return;
+	logger = UNITY_GET_INTERFACE(unityInterfaces, IUnityLog);
+	if (logger != NULL) {
+		int rc = sqlite3_config(SQLITE_CONFIG_LOG, &xLogError, NULL);
+		if (rc != SQLITE_OK) {
+			DEBUG_LOG("[SQLite-net] SQLITE_CONFIG_LOG error: %d", rc);
+		}
+		else {
+			DEBUG_LOG("[SQLite-net] SQLITE_CONFIG_LOG initialized");
+		}
 	}
 
-	allocator = memory_manager->CreateAllocator("SQLite-net", "SQLite Memory Allocator");
-	sqlite3_config(SQLITE_CONFIG_MALLOC, &mem_methods);
+	memory_manager = UNITY_GET_INTERFACE(unityInterfaces, IUnityMemoryManager);
+	if (memory_manager != NULL) {
+		allocator = memory_manager->CreateAllocator("SQLite-net", "SQLite Memory Allocator");
+		int rc = sqlite3_config(SQLITE_CONFIG_MALLOC, &mem_methods);
+		if (rc != SQLITE_OK) {
+			DEBUG_LOG("[SQLite-net] SQLITE_CONFIG_MALLOC error: %d", rc);
+		}
+		else {
+			DEBUG_LOG("[SQLite-net] SQLITE_CONFIG_MALLOC initialized");
+		}
+	}
 }
 
 void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload() {
@@ -78,4 +108,5 @@ void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload() {
 	}
 	allocator = NULL;
 	memory_manager = NULL;
+	logger = NULL;
 }
