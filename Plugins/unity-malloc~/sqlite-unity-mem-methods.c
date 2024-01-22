@@ -19,11 +19,15 @@ static UnityAllocator *allocator = NULL;
 #endif
 
 void xLogError(void *userdata, int error_code, const char *message) {
-	UNITY_LOG_ERROR(logger, message);
+	if (error_code == SQLITE_OK) {
+		UNITY_LOG(logger, message);
+	}
+	else {
+		UNITY_LOG_ERROR(logger, message);
+	}
 }
 
-#define ALIGNMENT \
-	(8)
+#define ALIGNMENT  (8)
 
 #define ROUND8(x)     (((x)+7)&~7)
 
@@ -66,16 +70,6 @@ static int xInit(void *_) {
 static void xShutdown(void *_) {
 }
 
-static sqlite3_mem_methods mem_methods = {
-	&xMalloc,
-	&xFree,
-	&xRealloc,
-	&xSize,
-	&xRoundup,
-	&xInit,
-	&xShutdown,
-	NULL,
-};
 
 void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces * unityInterfaces) {
 	logger = UNITY_GET_INTERFACE(unityInterfaces, IUnityLog);
@@ -92,6 +86,16 @@ void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces
 	memory_manager = UNITY_GET_INTERFACE(unityInterfaces, IUnityMemoryManager);
 	if (memory_manager != NULL) {
 		allocator = memory_manager->CreateAllocator("SQLite-net", "SQLite Memory Allocator");
+		sqlite3_mem_methods mem_methods = {
+			&xMalloc,
+			&xFree,
+			&xRealloc,
+			&xSize,
+			&xRoundup,
+			&xInit,
+			&xShutdown,
+			NULL,
+		};
 		int rc = sqlite3_config(SQLITE_CONFIG_MALLOC, &mem_methods);
 		if (rc != SQLITE_OK) {
 			DEBUG_LOG("[SQLite-net] SQLITE_CONFIG_MALLOC error: %d", rc);
@@ -101,8 +105,13 @@ void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces
 		}
 	}
 
-	sqlite3_initialize();
-	DEBUG_LOG("[SQLite-net] SQLite initialized");
+	int rc = sqlite3_initialize();
+	if (rc != SQLITE_OK) {
+		DEBUG_LOG("[SQLite-net] SQLite error: %d", rc);
+	}
+	else {
+		DEBUG_LOG("[SQLite-net] SQLite initialized");
+	}
 }
 
 void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload() {
