@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "../sqlite-amalgamation-3440200~/sqlite3.h"
+#include "../sqlite-amalgamation-3450000~/sqlite3.h"
 #include "IUnityInterface.h"
 #include "IUnityLog.h"
 #include "IUnityMemoryManager.h"

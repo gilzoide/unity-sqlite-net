@@ -29,7 +29,7 @@ BUILD_DIRS = \
 	lib/android/arm64 lib/android/arm32 lib/android/x86 lib/android/x86_64 \
 	lib/webgl
 
-SQLITE_SRC = sqlite-amalgamation-3440200~/sqlite3.c
+SQLITE_SRC = sqlite-amalgamation-3450000~/sqlite3.c
 MEMORY_METHODS_SRC = unity-malloc~/sqlite-unity-mem-methods.c
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = sqlite-net
