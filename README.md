@@ -12,6 +12,11 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
 - `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
 
 
+## Optional packages
+- [SQLite Asset](https://github.com/gilzoide/unity-sqlite-asset): read-only SQLite database assets for Unity with scripted importer for ".sqlite", ".sqlite2" and ".sqlite3" files
+- [SQLite Asset - CSV](https://github.com/gilzoide/unity-sqlite-asset-csv): easily import ".csv" files as read-only SQLite database assets
+
+
 ## How to install
 Either:
 - Use the [openupm registry](https://openupm.com/) and install this package using the [openupm-cli](https://github.com/openupm/openupm-cli):
