@@ -32,7 +32,7 @@ BUILD_DIRS = \
 SQLITE_SRC = sqlite-amalgamation-3450000~/sqlite3.c
 MEMORY_METHODS_SRC = unity-malloc~/sqlite-unity-mem-methods.c
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
-SQLITE_NET_DEST = sqlite-net
+SQLITE_NET_DEST = ../Runtime/sqlite-net
 
 $(BUILD_DIRS):
 	mkdir -p $@
@@ -89,10 +89,10 @@ lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
 	$(EMCC) -o $@ $^ $(CFLAGS) -c -emit-llvm
 
 # Source
-sqlite-net/%.cs: sqlite-net~/src/%.cs
+$(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs
 	cat $< | sed -f fix-library-path.sed~ > $@
 
-sqlite-net/License.txt: sqlite-net~/License.txt
+$(SQLITE_NET_DEST)/License.txt: sqlite-net~/License.txt
 	cp $< $@
 
 # Targets
@@ -121,7 +121,7 @@ android-x86: lib/android/x86/libgilzoide-sqlite-net.so
 
 webgl: lib/webgl/libgilzoide-sqlite-net.bc
 
-source: sqlite-net/License.txt sqlite-net/AssemblyInfo.cs sqlite-net/SQLite.cs sqlite-net/SQLiteAsync.cs
+source: $(SQLITE_NET_DEST)/License.txt $(SQLITE_NET_DEST)/AssemblyInfo.cs $(SQLITE_NET_DEST)/SQLite.cs $(SQLITE_NET_DEST)/SQLiteAsync.cs
 
 all-android: android-arm64 android-arm32 android-x86_64 android-x86
 all-apple: macos-universal ios-universal tvos-universal visionos-universal
