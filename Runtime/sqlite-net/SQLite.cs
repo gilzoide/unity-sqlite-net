@@ -4348,7 +4348,7 @@ namespace SQLite
 		}
 	}
 
-	public static class SQLite3
+	public static partial class SQLite3
 	{
 		public enum Result : int
 		{
