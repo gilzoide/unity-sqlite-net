@@ -57,6 +57,10 @@ namespace SQLite
         public static byte[] Serialize(IntPtr db, string schema = null)
         {
             IntPtr buffer = Serialize(db, schema, out long size, SerializeFlags.None);
+            if (buffer == IntPtr.Zero)
+            {
+                return null;
+            }
             try
             {
                 var bytes = new byte[size];
