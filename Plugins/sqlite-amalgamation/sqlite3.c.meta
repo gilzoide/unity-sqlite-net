@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c7345b2c7928b4b2b95b9bf23377fffe
+guid: 4f4aecd216a78400d96ff7b4a39f0627
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -24,8 +24,8 @@ PluginImporter:
         Exclude WebGL: 1
         Exclude Win: 1
         Exclude Win64: 1
-        Exclude iOS: 1
-        Exclude tvOS: 1
+        Exclude iOS: 0
+        Exclude tvOS: 0
   - first:
       Android: Android
     second:
@@ -77,24 +77,33 @@ PluginImporter:
       settings:
         AddToEmbeddedBinaries: false
         CPU: ARM64
-        CompileFlags: 
+        CompileFlags: -DSQLITE_DQS=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1
+          -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_OMIT_DECLTYPE
+          -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_SHARED_CACHE
+          -DSQLITE_USE_ALLOCA -DSQLITE_USE_URI -w
         FrameworkDependencies: 
   - first:
       iPhone: iOS
     second:
-      enabled: 0
+      enabled: 1
       settings:
         AddToEmbeddedBinaries: false
         CPU: AnyCPU
-        CompileFlags: 
+        CompileFlags: -DSQLITE_DQS=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1
+          -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_OMIT_DECLTYPE
+          -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_SHARED_CACHE
+          -DSQLITE_USE_ALLOCA -DSQLITE_USE_URI -w
         FrameworkDependencies: 
   - first:
       tvOS: tvOS
     second:
-      enabled: 0
+      enabled: 1
       settings:
         CPU: AnyCPU
-        CompileFlags: 
+        CompileFlags: -DSQLITE_DQS=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1
+          -DSQLITE_LIKE_DOESNT_MATCH_BLOBS -DSQLITE_MAX_EXPR_DEPTH=0 -DSQLITE_OMIT_DECLTYPE
+          -DSQLITE_OMIT_DEPRECATED -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_SHARED_CACHE
+          -DSQLITE_USE_ALLOCA -DSQLITE_USE_URI -w
         FrameworkDependencies: 
   userData: 
   assetBundleName: 
