@@ -19,7 +19,6 @@ CFLAGS += \
 	-DSQLITE_OMIT_PROGRESS_CALLBACK \
 	-DSQLITE_OMIT_SHARED_CACHE \
 	-DSQLITE_USE_ALLOCA \
-	-DSQLITE_OMIT_AUTOINIT \
 	-DSQLITE_USE_URI
 
 BUILD_DIRS = \
@@ -30,7 +29,6 @@ BUILD_DIRS = \
 	lib/webgl
 
 SQLITE_SRC = sqlite-amalgamation-3450200~/sqlite3.c
-MEMORY_METHODS_SRC = unity-malloc~/sqlite-unity-mem-methods.c
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = ../Runtime/sqlite-net
 
@@ -39,44 +37,44 @@ $(BUILD_DIRS):
 
 # Windows
 lib/windows/%/gilzoide-sqlite-net.dll: LINKFLAGS += -shared
-lib/windows/%/gilzoide-sqlite-net.dll: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/windows/%
+lib/windows/%/gilzoide-sqlite-net.dll: $(SQLITE_SRC) | lib/windows/%
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 # Linux
 lib/linux/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
 lib/linux/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
-lib/linux/%/libgilzoide-sqlite-net.so: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/linux/%
+lib/linux/%/libgilzoide-sqlite-net.so: $(SQLITE_SRC) | lib/linux/%
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 # macOS
 lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isysroot $(shell xcrun --show-sdk-path --sdk macosx)
 lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/macos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/macos
+lib/macos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/macos
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 # iOS
 lib/ios/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk iphoneos)
 lib/ios/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/ios/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/ios
+lib/ios/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/ios
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 # tvOS
 lib/tvos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk appletvos)
 lib/tvos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/tvos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/tvos
+lib/tvos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/tvos
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 # visionOS
 lib/visionos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk xros)
 lib/visionos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/visionos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/visionos
+lib/visionos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/visionos
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 
 # Android
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
 lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
-lib/android/%/libgilzoide-sqlite-net.so: $(SQLITE_SRC) $(MEMORY_METHODS_SRC) | lib/android/%
+lib/android/%/libgilzoide-sqlite-net.so: $(SQLITE_SRC) | lib/android/%
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
 lib/android/arm64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/aarch64-linux-android21-clang)
