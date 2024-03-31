@@ -24,11 +24,11 @@ CFLAGS += \
 BUILD_DIRS = \
 	lib/windows/x86_64 lib/windows/x86 \
 	lib/linux/x86_64 lib/linux/x86 \
-	lib/macos lib/ios lib/tvos lib/visionos \
+	lib/macos \
 	lib/android/arm64 lib/android/arm32 lib/android/x86 lib/android/x86_64 \
 	lib/webgl
 
-SQLITE_SRC = sqlite-amalgamation-3450200~/sqlite3.c
+SQLITE_SRC = sqlite-amalgamation/sqlite3.c
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = ../Runtime/sqlite-net
 
@@ -52,25 +52,6 @@ lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
 lib/macos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/macos
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
 
-# iOS
-lib/ios/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk iphoneos)
-lib/ios/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/ios/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/ios
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
-
-# tvOS
-lib/tvos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk appletvos)
-lib/tvos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/tvos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/tvos
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
-
-# visionOS
-lib/visionos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -isysroot $(shell xcrun --show-sdk-path --sdk xros)
-lib/visionos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/visionos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/visionos
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
-
-
 # Android
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
 lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
@@ -87,7 +68,7 @@ lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
 	$(EMCC) -o $@ $^ $(CFLAGS) -c -emit-llvm
 
 # Source
-$(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs
+$(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs fix-library-path.sed~
 	cat $< | sed -f fix-library-path.sed~ > $@
 
 $(SQLITE_NET_DEST)/License.txt: sqlite-net~/License.txt
@@ -108,9 +89,6 @@ windows-mingw-x86: lib/windows/x86/gilzoide-sqlite-net.dll
 linux-x86_64: lib/linux/x86_64/libgilzoide-sqlite-net.so
 
 macos-universal: lib/macos/libgilzoide-sqlite-net.dylib
-ios-universal: lib/ios/libgilzoide-sqlite-net.dylib
-tvos-universal: lib/tvos/libgilzoide-sqlite-net.dylib
-visionos-universal: lib/visionos/libgilzoide-sqlite-net.dylib
 
 android-arm64: lib/android/arm64/libgilzoide-sqlite-net.so
 android-arm32: lib/android/arm32/libgilzoide-sqlite-net.so
@@ -122,7 +100,7 @@ webgl: lib/webgl/libgilzoide-sqlite-net.bc
 source: $(SQLITE_NET_DEST)/License.txt $(SQLITE_NET_DEST)/AssemblyInfo.cs $(SQLITE_NET_DEST)/SQLite.cs $(SQLITE_NET_DEST)/SQLiteAsync.cs
 
 all-android: android-arm64 android-arm32 android-x86_64 android-x86
-all-apple: macos-universal ios-universal tvos-universal visionos-universal
+all-apple: macos-universal
 all-linux: linux-x86_64
 all-webgl: webgl
 all-windows: windows-x86_64 windows-x86
