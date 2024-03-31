@@ -1,6 +1,6 @@
 {
     "name": "Gilzoide.SqliteNet",
-    "rootNamespace": "",
+    "rootNamespace": "SQLite",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
