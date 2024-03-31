@@ -8,7 +8,7 @@ namespace SQLite
     public partial class SQLite3
     {
         [DllImport(LibraryPath, EntryPoint = "sqlite3_config", CallingConvention = CallingConvention.Cdecl)]
-		public static extern Result Config(int option, IntPtr logFunc, IntPtr userdata);
+        public static extern Result Config(int option, IntPtr logFunc, IntPtr userdata);
 
         public delegate void SQLiteLogCallbackDelegate(IntPtr userdata, Result resultCode, IntPtr messagePtr);
 
