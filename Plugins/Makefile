@@ -7,20 +7,6 @@ else
 	CFLAGS += -O3 -DNDEBUG
 endif
 
-# SQLite recommended defines + USE_URI. Reference: https://www.sqlite.org/compile.html
-CFLAGS += \
-	-DSQLITE_DQS=0 \
-	-DSQLITE_DEFAULT_MEMSTATUS=0 \
-	-DSQLITE_DEFAULT_WAL_SYNCHRONOUS=1 \
-	-DSQLITE_LIKE_DOESNT_MATCH_BLOBS \
-	-DSQLITE_MAX_EXPR_DEPTH=0 \
-	-DSQLITE_OMIT_DECLTYPE \
-	-DSQLITE_OMIT_DEPRECATED \
-	-DSQLITE_OMIT_PROGRESS_CALLBACK \
-	-DSQLITE_OMIT_SHARED_CACHE \
-	-DSQLITE_USE_ALLOCA \
-	-DSQLITE_USE_URI
-
 BUILD_DIRS = \
 	lib/windows/x86_64 lib/windows/x86 \
 	lib/linux/x86_64 lib/linux/x86 \
@@ -29,34 +15,45 @@ BUILD_DIRS = \
 	lib/webgl
 
 SQLITE_SRC = sqlite-amalgamation/sqlite3.c
+SQLITE_DEFINES_SRC = sqlite-defines.txt~
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = ../Runtime/sqlite-net
+
+ifneq ($(findstring 4.,$(MAKE_VERSION)),)
+	CFLAGS += $(file < $(SQLITE_DEFINES_SRC))
+else
+	CFLAGS += $(shell cat $(SQLITE_DEFINES_SRC))
+endif
 
 $(BUILD_DIRS):
 	mkdir -p $@
 
+.PRECIOUS: lib/%/sqlite3.o~
+lib/%/sqlite3.o~: $(SQLITE_SRC) $(SQLITE_DEFINES_SRC) | lib/%
+	$(CC) -c -o $@ $< $(CFLAGS)
+
 # Windows
 lib/windows/%/gilzoide-sqlite-net.dll: LINKFLAGS += -shared
-lib/windows/%/gilzoide-sqlite-net.dll: $(SQLITE_SRC) | lib/windows/%
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
+lib/windows/%/gilzoide-sqlite-net.dll: lib/windows/%/sqlite3.o~ | lib/windows/%
+	$(CC) -o $@ $^ $(LINKFLAGS)
 
 # Linux
 lib/linux/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
 lib/linux/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
-lib/linux/%/libgilzoide-sqlite-net.so: $(SQLITE_SRC) | lib/linux/%
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
+lib/linux/%/libgilzoide-sqlite-net.so: lib/linux/%/sqlite3.o~ | lib/linux/%
+	$(CC) -o $@ $^ $(LINKFLAGS)
 
 # macOS
 lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isysroot $(shell xcrun --show-sdk-path --sdk macosx)
 lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
-lib/macos/libgilzoide-sqlite-net.dylib: $(SQLITE_SRC) | lib/macos
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
+lib/macos/libgilzoide-sqlite-net.dylib: lib/macos/sqlite3.o~ | lib/macos
+	$(CC) -o $@ $^ $(LINKFLAGS)
 
 # Android
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
 lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
-lib/android/%/libgilzoide-sqlite-net.so: $(SQLITE_SRC) | lib/android/%
-	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS)
+lib/android/%/libgilzoide-sqlite-net.so: lib/android/%/sqlite3.o~ | lib/android/%
+	$(CC) -o $@ $^ $(LINKFLAGS)
 
 lib/android/arm64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/aarch64-linux-android21-clang)
 lib/android/arm32/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/armv7a-linux-androideabi19-clang)
@@ -64,8 +61,8 @@ lib/android/x86_64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT
 lib/android/x86/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android19-clang)
 
 # WebGL
-lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
-	$(EMCC) -o $@ $^ $(CFLAGS) -c -emit-llvm
+lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) $(SQLITE_DEFINES_SRC) | lib/webgl
+	$(EMCC) -c -emit-llvm -o $@ $< $(CFLAGS)
 
 # Source
 $(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs fix-library-path.sed~
