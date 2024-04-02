@@ -1,5 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
+#if UNITY_2018_1_OR_NEWER
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
+#endif
 
 namespace SQLite
 {
@@ -38,5 +42,50 @@ namespace SQLite
             }
             return db;
         }
+
+#if UNITY_2018_1_OR_NEWER
+        public static SQLiteConnection Deserialize(this SQLiteConnection db, NativeArray<byte> buffer, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
+        {
+            return Deserialize(db, buffer, buffer.Length, schema, flags);
+        }
+
+        public static SQLiteConnection Deserialize(this SQLiteConnection db, NativeArray<byte> buffer, long usedSize, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
+        {
+            SQLite3.Result result;
+            unsafe
+            {
+                result = SQLite3.Deserialize(db.Handle, schema, buffer.GetUnsafePtr(), usedSize, buffer.Length, flags);
+            }
+            if (result != SQLite3.Result.OK)
+            {
+                throw SQLiteException.New(result, SQLite3.GetErrmsg(db.Handle));
+            }
+            return db;
+        }
+#endif
+
+#if UNITY_2021_2_OR_NEWER
+        public static SQLiteConnection Deserialize(this SQLiteConnection db, ReadOnlySpan<byte> buffer, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
+        {
+            return Deserialize(db, buffer, buffer.Length, schema, flags);
+        }
+
+        public static SQLiteConnection Deserialize(this SQLiteConnection db, ReadOnlySpan<byte> buffer, long usedSize, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
+        {
+            SQLite3.Result result;
+            unsafe
+            {
+                fixed (void* ptr = buffer)
+                {
+                    result = SQLite3.Deserialize(db.Handle, schema, ptr, usedSize, buffer.Length, flags);
+                }
+            }
+            if (result != SQLite3.Result.OK)
+            {
+                throw SQLiteException.New(result, SQLite3.GetErrmsg(db.Handle));
+            }
+            return db;
+        }
+#endif
     }
 }
