@@ -22,22 +22,13 @@ namespace SQLite
         }
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_serialize", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr Serialize(
-            IntPtr db,  /* The database connection */
-            [MarshalAs(UnmanagedType.LPStr)] string zSchema,  /* Which DB to serialize. ex: "main", "temp", ... */
-            out long piSize,  /* Write size of the DB here, if not NULL */
-            SerializeFlags mFlags  /* Zero or more SQLITE_SERIALIZE_* flags */
-        );
+        public static extern IntPtr Serialize(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string zSchema, out long piSize, SerializeFlags mFlags);
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_deserialize", CallingConvention = CallingConvention.Cdecl)]
-        public static extern Result Deserialize(
-            IntPtr db,  /* The database connection */
-            [MarshalAs(UnmanagedType.LPStr)] string zSchema,  /* Which DB to reopen with the deserialization */
-            byte[] pData,  /* The serialized database content */
-            long szDb,  /* Number bytes in the deserialization */
-            long szBuf,  /* Total size of buffer pData[] */
-            DeserializeFlags mFlags  /* Zero or more SQLITE_DESERIALIZE_* flags */
-        );
+        public static extern Result Deserialize(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string zSchema, byte[] pData, long szDb, long szBuf, DeserializeFlags mFlags);
+        
+        [DllImport(LibraryPath, EntryPoint = "sqlite3_deserialize", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern Result Deserialize(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string zSchema, void* pData, long szDb, long szBuf, DeserializeFlags mFlags);
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_malloc", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr Malloc(int size);
@@ -53,34 +44,5 @@ namespace SQLite
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr Free(IntPtr ptr);
-
-        public static byte[] Serialize(IntPtr db, string schema = null)
-        {
-            IntPtr buffer = Serialize(db, schema, out long size, SerializeFlags.None);
-            if (buffer == IntPtr.Zero)
-            {
-                return null;
-            }
-            try
-            {
-                var bytes = new byte[size];
-                Marshal.Copy(buffer, bytes, 0, (int) size);
-                return bytes;
-            }
-            finally
-            {
-                Free(buffer);
-            }
-        }
-
-        public static Result Deserialize(IntPtr db, byte[] bytes, string schema = null, DeserializeFlags flags = DeserializeFlags.None)
-        {
-            return Deserialize(db, bytes, bytes.LongLength, schema, flags);
-        }
-
-        public static Result Deserialize(IntPtr db, byte[] bytes, long usedLength, string schema = null, DeserializeFlags flags = DeserializeFlags.None)
-        {
-            return Deserialize(db, schema, bytes, usedLength, bytes.LongLength, flags);
-        }
     }
 }
