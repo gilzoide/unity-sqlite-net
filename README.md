@@ -5,10 +5,14 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
 
 
 ## Features
-- [SQLite-net v1.8.116](https://github.com/praeclarum/sqlite-net/tree/v1.8.116): both synchronous and asynchronous APIs are available
-- [SQLite 3.45.2](https://sqlite.org/releaselog/3_45_2.html) prebuilt for the following platforms: Windows, Linux, macOS, iOS, tvOS, visionOS, Android and WebGL
-- `SQLiteConnection.Serialize` extension method for serializing a database to `byte[]` (reference: [SQLite Serialization](https://www.sqlite.org/c3ref/serialize.html)).
-- `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
+- [SQLite-net v1.8.116](https://github.com/praeclarum/sqlite-net/tree/v1.8.116)
+  + Both synchronous and asynchronous APIs are available
+  + `SQLiteConnection.Serialize` extension method for serializing a database to `byte[]` (reference: [SQLite Serialization](https://www.sqlite.org/c3ref/serialize.html)).
+  + `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
+- [SQLite 3.45.2](https://sqlite.org/releaselog/3_45_2.html)
+  + Enabled modules: [R\*Tree](https://sqlite.org/rtree.html), [Geopoly](https://sqlite.org/geopoly.html), [FTS5](https://sqlite.org/fts5.html), [Built-In Math Functions](https://www.sqlite.org/lang_mathfunc.html)
+  + Prebuilt for Windows, Linux, macOS, Android and WebGL
+  + Built from source in iOS, tvOS and visionOS projects
 
 
 ## Optional packages
