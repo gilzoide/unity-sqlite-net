@@ -1,10 +1,27 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace SQLite
 {
     public static class SQLiteConnectionExtensions
     {
         public static byte[] Serialize(this SQLiteConnection db, string schema = null)
         {
-            return SQLite3.Serialize(db.Handle, schema);
+            IntPtr buffer = SQLite3.Serialize(db.Handle, schema, out long size, SQLite3.SerializeFlags.None);
+            if (buffer == IntPtr.Zero)
+            {
+                return null;
+            }
+            try
+            {
+                var bytes = new byte[size];
+                Marshal.Copy(buffer, bytes, 0, (int) size);
+                return bytes;
+            }
+            finally
+            {
+                SQLite3.Free(buffer);
+            }
         }
 
         public static SQLiteConnection Deserialize(this SQLiteConnection db, byte[] buffer, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)

@@ -53,34 +53,5 @@ namespace SQLite
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr Free(IntPtr ptr);
-
-        public static byte[] Serialize(IntPtr db, string schema = null)
-        {
-            IntPtr buffer = Serialize(db, schema, out long size, SerializeFlags.None);
-            if (buffer == IntPtr.Zero)
-            {
-                return null;
-            }
-            try
-            {
-                var bytes = new byte[size];
-                Marshal.Copy(buffer, bytes, 0, (int) size);
-                return bytes;
-            }
-            finally
-            {
-                Free(buffer);
-            }
-        }
-
-        public static Result Deserialize(IntPtr db, byte[] bytes, string schema = null, DeserializeFlags flags = DeserializeFlags.None)
-        {
-            return Deserialize(db, bytes, bytes.LongLength, schema, flags);
-        }
-
-        public static Result Deserialize(IntPtr db, byte[] bytes, long usedLength, string schema = null, DeserializeFlags flags = DeserializeFlags.None)
-        {
-            return Deserialize(db, schema, bytes, usedLength, bytes.LongLength, flags);
-        }
     }
 }
