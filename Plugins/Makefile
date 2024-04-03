@@ -15,21 +15,23 @@ BUILD_DIRS = \
 	lib/webgl
 
 SQLITE_SRC = sqlite-amalgamation/sqlite3.c
-SQLITE_DEFINES_SRC = sqlite-defines.txt~
+SQLITE_CFLAGS_SRC = tools~/sqlite-cflags.txt
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = ../Runtime/sqlite-net
+SQLITE_NET_SED_SCRIPT = tools~/fix-library-path.sed
 
 ifneq ($(findstring 4.,$(MAKE_VERSION)),)
-	CFLAGS += $(file < $(SQLITE_DEFINES_SRC))
+	CFLAGS += $(file < $(SQLITE_CFLAGS_SRC))
 else
-	CFLAGS += $(shell cat $(SQLITE_DEFINES_SRC))
+	CFLAGS += $(shell cat $(SQLITE_CFLAGS_SRC))
 endif
 
 $(BUILD_DIRS):
 	mkdir -p $@
 
 .PRECIOUS: lib/%/sqlite3.o~
-lib/%/sqlite3.o~: $(SQLITE_SRC) $(SQLITE_DEFINES_SRC) | lib/%
+lib/%/sqlite3.o~: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
+lib/%/sqlite3.o~: $(SQLITE_SRC) | lib/%
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 # Windows
@@ -61,12 +63,13 @@ lib/android/x86_64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT
 lib/android/x86/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android19-clang)
 
 # WebGL
-lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) $(SQLITE_DEFINES_SRC) | lib/webgl
+lib/webgl/libgilzoide-sqlite-net.bc: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
+lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
 	$(EMCC) -c -emit-llvm -o $@ $< $(CFLAGS)
 
 # Source
-$(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs fix-library-path.sed~
-	cat $< | sed -f fix-library-path.sed~ > $@
+$(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs $(SQLITE_NET_SED_SCRIPT)
+	cat $< | sed -f $(SQLITE_NET_SED_SCRIPT) > $@
 
 $(SQLITE_NET_DEST)/License.txt: sqlite-net~/License.txt
 	cp $< $@
