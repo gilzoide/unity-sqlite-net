@@ -21,10 +21,11 @@ SQLITE_NET_DEST = ../Runtime/sqlite-net
 SQLITE_NET_SED_SCRIPT = tools~/fix-library-path.sed
 
 ifneq ($(findstring 4.,$(MAKE_VERSION)),)
-	CFLAGS += $(file < $(SQLITE_CFLAGS_SRC))
+	SQLITE_CFLAGS = $(file < $(SQLITE_CFLAGS_SRC))
 else
-	CFLAGS += $(shell cat $(SQLITE_CFLAGS_SRC))
+	SQLITE_CFLAGS = $(shell cat $(SQLITE_CFLAGS_SRC))
 endif
+CFLAGS += $(SQLITE_CFLAGS)
 
 $(BUILD_DIRS):
 	mkdir -p $@
@@ -50,6 +51,11 @@ lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isys
 lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
 lib/macos/libgilzoide-sqlite-net.dylib: lib/macos/sqlite3.o~ | lib/macos
 	$(CC) -o $@ $^ $(LINKFLAGS)
+
+# iOS/tvOS/visionOS compile flags
+sqlite-amalgamation/sqlite3.c.meta: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
+sqlite-amalgamation/sqlite3.c.meta:
+	sed -i '' -E -e 's/(\s*CompileFlags:).*/\1 $(SQLITE_CFLAGS)/' $@
 
 # Android
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
@@ -100,7 +106,7 @@ webgl: lib/webgl/libgilzoide-sqlite-net.bc
 source: $(SQLITE_NET_DEST)/License.txt $(SQLITE_NET_DEST)/AssemblyInfo.cs $(SQLITE_NET_DEST)/SQLite.cs $(SQLITE_NET_DEST)/SQLiteAsync.cs
 
 all-android: android-arm64 android-arm32 android-x86_64 android-x86
-all-apple: macos-universal
+all-apple: macos-universal sqlite-amalgamation/sqlite3.c.meta
 all-linux: linux-x86_64
 all-webgl: webgl
 all-windows: windows-x86_64 windows-x86
