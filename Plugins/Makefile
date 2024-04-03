@@ -114,14 +114,14 @@ all-windows-mingw: windows-mingw-x86_64 windows-mingw-x86
 
 # Dockerized builds
 docker-all-android:
-	docker build -f tools~/Dockerfile.build.android -t gilzoide-sqlite-net-android:latest .
-	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-android:latest make all-android
+	docker build -f tools~/Dockerfile.build.android -t gilzoide-sqlite-net-build-android:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-build-android:latest make all-android
 docker-all-linux:
-	docker build -f tools~/Dockerfile.build.linux -t gilzoide-sqlite-net-linux:latest .
-	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-linux:latest make all-linux
+	docker build -f tools~/Dockerfile.build.linux -t gilzoide-sqlite-net-build-linux:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-build-linux:latest make all-linux
 docker-all-webgl:
-	docker build -f tools~/Dockerfile.build.webgl -t gilzoide-sqlite-net-webgl:latest .
-	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-webgl:latest make all-webgl
+	docker build -f tools~/Dockerfile.build.webgl -t gilzoide-sqlite-net-build-webgl:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-build-webgl:latest make all-webgl
 docker-all-windows:
-	docker build -f tools~/Dockerfile.build.windows -t gilzoide-sqlite-net-windows:latest .
-	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-windows:latest make all-windows-mingw
+	docker build -f tools~/Dockerfile.build.windows -t gilzoide-sqlite-net-build-windows:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-build-windows:latest make all-windows-mingw
