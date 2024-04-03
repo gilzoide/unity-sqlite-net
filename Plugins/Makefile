@@ -59,7 +59,7 @@ sqlite-amalgamation/sqlite3.c.meta:
 
 # Android
 check-ndk-root:
-ifeq ($(ANDROID_NDK_ROOT),)
+ifndef ANDROID_NDK_ROOT
 	$(error ANDROID_NDK_ROOT must be set for Android builds!)
 endif
 
