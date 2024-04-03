@@ -58,9 +58,9 @@ lib/android/%/libgilzoide-sqlite-net.so: lib/android/%/sqlite3.o~ | lib/android/
 	$(CC) -o $@ $^ $(LINKFLAGS)
 
 lib/android/arm64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/aarch64-linux-android21-clang)
-lib/android/arm32/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/armv7a-linux-androideabi19-clang)
+lib/android/arm32/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/armv7a-linux-androideabi21-clang)
 lib/android/x86_64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/x86_64-linux-android21-clang)
-lib/android/x86/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android19-clang)
+lib/android/x86/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android21-clang)
 
 # WebGL
 lib/webgl/libgilzoide-sqlite-net.bc: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
@@ -105,3 +105,17 @@ all-linux: linux-x86_64
 all-webgl: webgl
 all-windows: windows-x86_64 windows-x86
 all-windows-mingw: windows-mingw-x86_64 windows-mingw-x86
+
+# Dockerized builds
+docker-all-android:
+	docker build -f tools~/Dockerfile.build.android -t gilzoide-sqlite-net-android:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-android:latest make all-android
+docker-all-linux:
+	docker build -f tools~/Dockerfile.build.linux -t gilzoide-sqlite-net-linux:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-linux:latest make all-linux
+docker-all-webgl:
+	docker build -f tools~/Dockerfile.build.webgl -t gilzoide-sqlite-net-webgl:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-webgl:latest make all-webgl
+docker-all-windows:
+	docker build -f tools~/Dockerfile.build.windows -t gilzoide-sqlite-net-windows:latest .
+	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-windows:latest make all-windows-mingw

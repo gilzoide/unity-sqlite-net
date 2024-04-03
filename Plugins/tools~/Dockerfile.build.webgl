@@ -1,0 +1,7 @@
+# syntax=docker/dockerfile:1
+FROM debian:12-slim
+
+RUN apt-get -qq update \
+    && apt-get -qq install -y --no-install-recommends \
+        emscripten \
+        make
