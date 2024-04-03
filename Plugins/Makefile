@@ -61,12 +61,21 @@ sqlite-amalgamation/sqlite3.c.meta:
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
 lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
 lib/android/%/libgilzoide-sqlite-net.so: lib/android/%/sqlite3.o~ | lib/android/%
-	$(CC) -o $@ $^ $(LINKFLAGS)
+	$(CC) -o $@ $< $(LINKFLAGS)
+
+check-ndk-root:
+ifeq ($(ANDROID_NDK_ROOT),)
+	$(error ANDROID_NDK_ROOT must be set for Android builds!)
+endif
 
 lib/android/arm64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/aarch64-linux-android21-clang)
+lib/android/arm64/libgilzoide-sqlite-net.so: check-ndk-root
 lib/android/arm32/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/armv7a-linux-androideabi21-clang)
+lib/android/arm32/libgilzoide-sqlite-net.so: check-ndk-root
 lib/android/x86_64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/x86_64-linux-android21-clang)
+lib/android/x86_64/libgilzoide-sqlite-net.so: check-ndk-root
 lib/android/x86/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android21-clang)
+lib/android/x86/libgilzoide-sqlite-net.so: check-ndk-root
 
 # WebGL
 lib/webgl/libgilzoide-sqlite-net.bc: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
