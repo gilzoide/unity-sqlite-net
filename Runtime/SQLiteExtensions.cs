@@ -43,6 +43,6 @@ namespace SQLite
         public static extern IntPtr Realloc(IntPtr ptr, long size);
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_free", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr Free(IntPtr ptr);
+        public static extern void Free(IntPtr ptr);
     }
 }
