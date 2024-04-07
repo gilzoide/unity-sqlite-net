@@ -26,10 +26,12 @@ namespace SQLite
             }
         }
 
+#if UNITY_EDITOR || !UNITY_WEBGL
         static SQLite3()
         {
             const int SQLITE_CONFIG_LOG = 16;  /* xFunc, void* */
             Config(SQLITE_CONFIG_LOG, Marshal.GetFunctionPointerForDelegate<SQLiteLogCallbackDelegate>(SQLiteLogCallback), IntPtr.Zero);
         }
+#endif
     }
 }
