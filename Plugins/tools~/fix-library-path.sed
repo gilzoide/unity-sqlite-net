@@ -16,7 +16,7 @@
 
 # Fix constrain `sqlite3_win32*` functions to Windows only
 # This avoids breaking IL2CPP builds with managed stripping level set to Minimal
-/sqlite3_win32_set_directory/ {
+/sqlite3_win32_/ {
 	i\
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 	n
