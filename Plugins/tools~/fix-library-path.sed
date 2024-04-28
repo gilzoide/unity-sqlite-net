@@ -14,6 +14,17 @@
 #endif
 }
 
+# Fix constrain `sqlite3_win32*` functions to Windows only
+# This avoids breaking IL2CPP builds with managed stripping level set to Minimal
+/sqlite3_win32_set_directory/ {
+	i\
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+	n
+	a\
+#endif
+}
+	
+
 # Make Quote function public, for libraries making raw queries
 s/static string Quote/public static string Quote/
 

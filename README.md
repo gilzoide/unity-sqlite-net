@@ -103,3 +103,4 @@ public class TestSQLite : MonoBehaviour
   This is useful for libraries that want to bind additional native SQLite functions via P/Invoke.
 - `SQLiteConnection.Quote` is made public.
   This is be useful for libraries making raw queries.
+- `SQLite3.SetDirectory` is only defined in Windows platforms.
