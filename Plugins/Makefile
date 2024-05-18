@@ -42,7 +42,7 @@ lib/windows/%/gilzoide-sqlite-net.dll: lib/windows/%/sqlite3.o~ | lib/windows/%
 
 # Linux
 lib/linux/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
-lib/linux/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
+lib/linux/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared -lm
 lib/linux/%/libgilzoide-sqlite-net.so: lib/linux/%/sqlite3.o~ | lib/linux/%
 	$(CC) -o $@ $^ $(LINKFLAGS)
 
@@ -64,7 +64,7 @@ ifndef ANDROID_NDK_ROOT
 endif
 
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
-lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared
+lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared -lm
 lib/android/%/libgilzoide-sqlite-net.so: lib/android/%/sqlite3.o~ check-ndk-root | lib/android/%
 	$(CC) -o $@ $< $(LINKFLAGS)
 
