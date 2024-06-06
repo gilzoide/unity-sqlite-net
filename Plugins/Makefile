@@ -8,7 +8,7 @@ else
 endif
 
 BUILD_DIRS = \
-	lib/windows/x86_64 lib/windows/x86 \
+	lib/windows/x86_64 lib/windows/x86 lib/windows/arm64 \
 	lib/linux/x86_64 lib/linux/x86 \
 	lib/macos \
 	lib/android/arm64 lib/android/arm32 lib/android/x86 lib/android/x86_64 \
@@ -88,6 +88,7 @@ $(SQLITE_NET_DEST)/License.txt: sqlite-net~/License.txt
 # Targets
 windows-x86_64: lib/windows/x86_64/gilzoide-sqlite-net.dll
 windows-x86: lib/windows/x86/gilzoide-sqlite-net.dll
+windows-arm64: lib/windows/arm64/gilzoide-sqlite-net.dll
 
 windows-mingw-x86_64: CC = x86_64-w64-mingw32-gcc
 windows-mingw-x86_64: LINKFLAGS += -static-libgcc
@@ -96,6 +97,10 @@ windows-mingw-x86_64: lib/windows/x86_64/gilzoide-sqlite-net.dll
 windows-mingw-x86: CC = i686-w64-mingw32-gcc
 windows-mingw-x86: LINKFLAGS += -static-libgcc
 windows-mingw-x86: lib/windows/x86/gilzoide-sqlite-net.dll
+
+windows-mingw-arm64: CC = aarch64-w64-mingw32-gcc
+windows-mingw-arm64: LINKFLAGS += -static-libgcc
+windows-mingw-arm64: lib/windows/arm64/gilzoide-sqlite-net.dll
 
 linux-x86_64: lib/linux/x86_64/libgilzoide-sqlite-net.so
 
@@ -116,6 +121,7 @@ all-linux: linux-x86_64
 all-webgl: webgl
 all-windows: windows-x86_64 windows-x86
 all-windows-mingw: windows-mingw-x86_64 windows-mingw-x86
+all-windows-llvm-mingw: windows-mingw-x86_64 windows-mingw-x86 windows-mingw-arm64
 
 # Dockerized builds
 docker-all-android:
@@ -130,3 +136,5 @@ docker-all-webgl:
 docker-all-windows:
 	docker build -f tools~/Dockerfile.build.windows -t gilzoide-sqlite-net-build-windows:latest .
 	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-build-windows:latest make all-windows-mingw
+docker-all-windows-llvm:
+	docker run --rm -v "$(CURDIR)":/src -w /src mstorsjo/llvm-mingw:latest make all-windows-llvm-mingw
