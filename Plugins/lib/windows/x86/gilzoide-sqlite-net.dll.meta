@@ -24,6 +24,7 @@ PluginImporter:
         Exclude WebGL: 1
         Exclude Win: 0
         Exclude Win64: 1
+        Exclude WindowsStoreApps: 0
         Exclude iOS: 1
         Exclude tvOS: 1
   - first:
@@ -79,6 +80,16 @@ PluginImporter:
         CPU: ARM64
         CompileFlags: 
         FrameworkDependencies: 
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
+      enabled: 1
+      settings:
+        CPU: X86
+        DontProcess: false
+        PlaceholderPath: 
+        SDK: AnySDK
+        ScriptingBackend: AnyScriptingBackend
   - first:
       iPhone: iOS
     second:
