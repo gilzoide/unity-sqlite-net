@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM --platform=linux/amd64 debian:12-slim
+FROM debian:12-slim
 
 ARG NDK_VERSION=r26c
 
@@ -12,4 +12,4 @@ RUN curl -SLO http://dl.google.com/android/repository/android-ndk-$NDK_VERSION-l
 RUN unzip android-ndk-$NDK_VERSION-linux.zip
 RUN mv ./android-ndk-$NDK_VERSION /opt/ndk
 RUN rm android-ndk-$NDK_VERSION-linux.zip
-ENV ANDROID_NDK_ROOT /opt/ndk
+ENV ANDROID_NDK_ROOT=/opt/ndk
