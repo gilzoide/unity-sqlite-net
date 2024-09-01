@@ -56,10 +56,10 @@ namespace SQLite
             Dispose();
         }
 
-        public void Reset()
+        public SQLite3.Result Reset()
         {
             ThrowIfDisposed();
-            SQLite3.Reset(_preparedStatement);
+            return SQLite3.Reset(_preparedStatement);
         }
 
         public SQLite3.Result Bind(int index, bool value)
