@@ -7,5 +7,12 @@
   "license": "MIT",
   "author": {
     "name": "Gil Barbosa Reis"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "SQLite REPL",
+      "description": "Demonstrates a simple REPL for SQL statements.",
+      "path": "Samples~/REPL"
+    }
+  ]
 }
