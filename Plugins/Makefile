@@ -1,5 +1,7 @@
 EMCC ?= emcc
 ANDROID_NDK_ROOT ?=
+CODESIGN ?= codesign
+MACOS_CODESIGN_SIGNATURE ?=
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O0 -g -DDEBUG
@@ -51,6 +53,9 @@ lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isys
 lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
 lib/macos/libgilzoide-sqlite-net.dylib: lib/macos/sqlite3.o~ | lib/macos
 	$(CC) -o $@ $^ $(LINKFLAGS)
+ifdef MACOS_CODESIGN_SIGNATURE
+	$(CODESIGN) -s "$(MACOS_CODESIGN_SIGNATURE)" $@
+endif
 
 # iOS/tvOS/visionOS compile flags
 sqlite-amalgamation/sqlite3.c.meta: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
