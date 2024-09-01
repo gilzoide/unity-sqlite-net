@@ -1,5 +1,7 @@
 EMCC ?= emcc
 ANDROID_NDK_ROOT ?=
+CODESIGN ?= codesign
+MACOS_CODESIGN_SIGNATURE ?=
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O0 -g -DDEBUG
@@ -51,6 +53,9 @@ lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isys
 lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared
 lib/macos/libgilzoide-sqlite-net.dylib: lib/macos/sqlite3.o~ | lib/macos
 	$(CC) -o $@ $^ $(LINKFLAGS)
+ifdef MACOS_CODESIGN_SIGNATURE
+	$(CODESIGN) -s "$(MACOS_CODESIGN_SIGNATURE)" $@
+endif
 
 # iOS/tvOS/visionOS compile flags
 sqlite-amalgamation/sqlite3.c.meta: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
@@ -125,10 +130,10 @@ all-windows-llvm-mingw: windows-mingw-x86_64 windows-mingw-x86 windows-mingw-arm
 
 # Dockerized builds
 docker-all-android:
-	docker build -f tools~/Dockerfile.build.android -t gilzoide-sqlite-net-build-android:latest .
+	docker build -f tools~/Dockerfile.build.android --platform=linux/amd64 -t gilzoide-sqlite-net-build-android:latest .
 	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-build-android:latest make all-android
 docker-all-linux:
-	docker build -f tools~/Dockerfile.build.linux -t gilzoide-sqlite-net-build-linux:latest .
+	docker build -f tools~/Dockerfile.build.linux --platform=linux/amd64 -t gilzoide-sqlite-net-build-linux:latest .
 	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-build-linux:latest make all-linux
 docker-all-webgl:
 	docker build -f tools~/Dockerfile.build.webgl -t gilzoide-sqlite-net-build-webgl:latest .
