@@ -65,5 +65,17 @@ namespace SQLite
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern void Free(IntPtr ptr);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport(LibraryPath, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int idbvfs_register(int makeDefault);
+#endif
+
+        static SQLite3()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            idbvfs_register(1);
+#endif
+        }
     }
 }
