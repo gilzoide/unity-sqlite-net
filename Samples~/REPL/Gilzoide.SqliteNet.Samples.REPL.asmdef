@@ -1,0 +1,16 @@
+{
+    "name": "Gilzoide.SqliteNet.Samples.REPL",
+    "rootNamespace": "",
+    "references": [
+        "Gilzoide.SqliteNet"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
