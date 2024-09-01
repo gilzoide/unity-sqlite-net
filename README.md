@@ -96,6 +96,14 @@ public class TestSQLite : MonoBehaviour
 ```
 
 
+## License
+SQLite-net for Unity first-party code is licensed under the [MIT license](LICENSE.txt).
+
+Third-party code:
+- SQLite-net: [MIT license](Runtime/sqlite-net/LICENSE.txt)
+- SQLite: [public domain](https://sqlite.org/copyright.html)
+
+
 ## Modifications made to SQLite-net source code
 - The value of `LibraryPath` was changed from `sqlite3` to `__Internal` in WebGL/iOS/tvOS/visionOS builds and `gilzoide-sqlite-net` for other platforms.
   This makes sure the prebuilt libraries are used instead of the ones provided by the system.
