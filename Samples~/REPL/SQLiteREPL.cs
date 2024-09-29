@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 using System;
+using System.IO;
 using System.Text;
 using SQLite;
 using UnityEngine;
@@ -36,7 +37,8 @@ namespace Gilzoide.SqliteNet.Samples.REPL
 
         void Start()
         {
-            _connection = new SQLiteConnection(DbName);
+            string path = Path.IsPathRooted(DbName) ? DbName : Path.Join(Application.persistentDataPath, DbName);
+            _connection = new SQLiteConnection(path);
         }
 
         void OnDestroy()
