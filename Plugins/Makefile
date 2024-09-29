@@ -1,5 +1,4 @@
 EMCC ?= emcc
-EMCXX ?= em++
 ANDROID_NDK_ROOT ?=
 CODESIGN ?= codesign
 MACOS_CODESIGN_SIGNATURE ?=
@@ -24,9 +23,6 @@ SQLITE_CFLAGS_SRC = tools~/sqlite-cflags.txt
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = ../Runtime/sqlite-net
 SQLITE_NET_SED_SCRIPT = tools~/fix-library-path.sed
-
-IDBVFS_SRC = idbvfs~/src/idbvfs.cpp
-IDBVFS_CXXFLAGS = -Isqlite-amalgamation -Iidbvfs~/libs/sqlite-vfs-cpp -fno-rtti -fno-exceptions -std=c++11
 
 ifneq ($(findstring 4.,$(MAKE_VERSION)),)
 	SQLITE_CFLAGS = $(file < $(SQLITE_CFLAGS_SRC))
@@ -89,9 +85,6 @@ lib/webgl/libgilzoide-sqlite-net.bc: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
 lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
 	$(EMCC) -c -emit-llvm -o $@ $< $(CFLAGS)
 
-lib/webgl/libidbvfs.bc: $(IDBVFS_SRC)
-	$(EMCXX) -c -emit-llvm -o $@ $< $(CXXFLAGS) $(IDBVFS_CXXFLAGS)
-
 # Source
 $(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs $(SQLITE_NET_SED_SCRIPT)
 	cat $< | sed -f $(SQLITE_NET_SED_SCRIPT) > $@
@@ -125,7 +118,7 @@ android-arm32: lib/android/arm32/libgilzoide-sqlite-net.so
 android-x86_64: lib/android/x86_64/libgilzoide-sqlite-net.so
 android-x86: lib/android/x86/libgilzoide-sqlite-net.so
 
-webgl: lib/webgl/libgilzoide-sqlite-net.bc lib/webgl/libidbvfs.bc
+webgl: lib/webgl/libgilzoide-sqlite-net.bc
 
 source: $(SQLITE_NET_DEST)/License.txt $(SQLITE_NET_DEST)/AssemblyInfo.cs $(SQLITE_NET_DEST)/SQLite.cs $(SQLITE_NET_DEST)/SQLiteAsync.cs
 

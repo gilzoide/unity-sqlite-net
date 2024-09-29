@@ -1,6 +1,3 @@
 [submodule "Plugins/sqlite-net~"]
 	path = Plugins/sqlite-net~
 	url = https://github.com/praeclarum/sqlite-net.git
-[submodule "Plugins/idbvfs~"]
-	path = Plugins/idbvfs~
-	url = https://github.com/gilzoide/idbvfs.git
