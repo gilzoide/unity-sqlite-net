@@ -225,6 +225,10 @@ namespace SQLite
         {
             ThrowIfDisposed();
             IntPtr ptr = SQLite3.ColumnText16(_preparedStatement, column);
+            if (ptr == IntPtr.Zero)
+            {
+                return null;
+            }
             int sizeInBytes = SQLite3.ColumnBytes16(_preparedStatement, column);
             return Marshal.PtrToStringUni(ptr, sizeInBytes / sizeof(char));
         }
@@ -233,6 +237,10 @@ namespace SQLite
         {
             ThrowIfDisposed();
             IntPtr blob = SQLite3.ColumnBlob(_preparedStatement, column);
+            if (blob == IntPtr.Zero)
+            {
+                return null;
+            }
             int sizeInBytes = SQLite3.ColumnBytes(_preparedStatement, column);
             var value = new byte[sizeInBytes];
             Marshal.Copy(blob, value, 0, sizeInBytes);
