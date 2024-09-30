@@ -68,5 +68,17 @@ namespace SQLite
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_column_bytes16", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ColumnBytes16(IntPtr stmt, int index);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport(LibraryPath, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int idbvfs_register(int makeDefault);
+#endif
+
+        static SQLite3()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            idbvfs_register(1);
+#endif
+        }
     }
 }
