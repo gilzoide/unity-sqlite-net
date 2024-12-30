@@ -794,7 +794,7 @@ namespace SQLite
 		{
 			//			public int cid { get; set; }
 
-			[Column ("name")]
+			[Column ("name"), UnityEngine.Scripting.RequiredMember]
 			public string Name { get; set; }
 
 			//			[Column ("type")]
