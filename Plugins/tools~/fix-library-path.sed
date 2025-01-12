@@ -34,3 +34,6 @@ s/class SQLite3/partial class SQLite3/
 # Add [RequiredMember] attribute to ColumnInfo.Name property
 # This fixes managed code stripping removing its setter method
 s/Column ("name")/Column ("name"), UnityEngine.Scripting.RequiredMember/
+
+# Use main thread TaskScheduler in WebGL
+s/TaskScheduler\.Default/SQLiteAsyncExtensions.TaskScheduler/
