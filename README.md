@@ -114,3 +114,4 @@ Third-party code:
   This is be useful for libraries making raw queries.
 - `SQLite3.SetDirectory` is only defined in Windows platforms.
 - Adds a `[RequiredMember]` attribute to `ColumnInfo.Name` property, fixing errors on columns when managed code stripping is enabled.
+- Changes the `TaskScheduler` used by the async API on WebGL to one that executes tasks on Unity's main thread.
