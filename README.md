@@ -29,7 +29,7 @@ Either:
   ```
 - Install using the [Unity Package Manager](https://docs.unity3d.com/Manual/upm-ui-giturl.html) with the following URL:
   ```
-  https://github.com/gilzoide/unity-sqlite-net.git#1.1.1
+  https://github.com/gilzoide/unity-sqlite-net.git#1.1.2
   ```
 - Clone this repository or download a snapshot of it directly inside your project's `Assets` or `Packages` folder.
 
