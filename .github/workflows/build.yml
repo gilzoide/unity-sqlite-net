@@ -13,15 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      include:
-        - platform: windows
-          target: docker-all-windows-llvm
-        - platform: linux
-          target: docker-all-linux
-        - platform: android
-          target: docker-all-android
-        - platform: webgl
-          target: docker-all-webgl
+      matrix:
+        include:
+          - platform: windows
+            target: docker-all-windows-llvm
+          - platform: linux
+            target: docker-all-linux
+          - platform: android
+            target: docker-all-android
+          - platform: webgl
+            target: docker-all-webgl
     steps:
       - uses: actions/checkout@v3
       - name: Cache SCons files
