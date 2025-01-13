@@ -31,16 +31,16 @@ jobs:
           path: $DOCKER_CACHE
           key: ${{ matrix.platform }}
       - name: Build
-        run: make -C Plugins ${{ matrix.target }} DOCKER_BUILD_ARGS="--cache-to type=local,dest=$DOCKER_CACHE --cache-from type=local,src=$DOCKER_CACHE"
+        run: make -C Plugins ${{ matrix.target }} DOCKER_BUILD_ARGS="--cache-from type=gha --cache-to type=gha,mode=max"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}
           path: |
-            Plugins/lib/${{ matrix.platform }}/**.bc
-            Plugins/lib/${{ matrix.platform }}/**.dll
-            Plugins/lib/${{ matrix.platform }}/**.dylib
-            Plugins/lib/${{ matrix.platform }}/**.so
+            Plugins/lib/${{ matrix.platform }}/**/*.bc
+            Plugins/lib/${{ matrix.platform }}/**/*.dll
+            Plugins/lib/${{ matrix.platform }}/**/*.dylib
+            Plugins/lib/${{ matrix.platform }}/**/*.so
 
   build_with_macos:
     name: macOS
@@ -54,4 +54,4 @@ jobs:
         with:
           name: macos
           path: |
-            Plugins/lib/macos/**.dylib
+            Plugins/lib/macos/*.dylib
