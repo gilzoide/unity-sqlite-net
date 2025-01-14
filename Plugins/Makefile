@@ -1,7 +1,14 @@
-EMCC ?= emcc
+# Android setup
 ANDROID_NDK_ROOT ?=
+# WebGL/Emscripten setup
+EMCC ?= emcc
+# macOS code signing setup
 CODESIGN ?= codesign
 MACOS_CODESIGN_SIGNATURE ?=
+# Download GitHub Action releases
+GITHUB_CLI_BIN ?= gh
+GITHUB_REPO ?= gilzoide/unity-sqlite-net
+RUN_ID ?=
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O0 -g -DDEBUG
@@ -130,16 +137,27 @@ all-windows-llvm-mingw: windows-mingw-x86_64 windows-mingw-x86 windows-mingw-arm
 
 # Dockerized builds
 docker-all-android:
-	docker build -f tools~/Dockerfile.build.android --platform=linux/amd64 -t gilzoide-sqlite-net-build-android:latest .
+	docker build -f tools~/Dockerfile.build.android --platform=linux/amd64 -t gilzoide-sqlite-net-build-android:latest $(DOCKER_BUILD_ARGS) .
 	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-build-android:latest make all-android
 docker-all-linux:
-	docker build -f tools~/Dockerfile.build.linux --platform=linux/amd64 -t gilzoide-sqlite-net-build-linux:latest .
+	docker build -f tools~/Dockerfile.build.linux --platform=linux/amd64 -t gilzoide-sqlite-net-build-linux:latest $(DOCKER_BUILD_ARGS) .
 	docker run --rm -v "$(CURDIR)":/src -w /src --platform=linux/amd64 gilzoide-sqlite-net-build-linux:latest make all-linux
 docker-all-webgl:
-	docker build -f tools~/Dockerfile.build.webgl -t gilzoide-sqlite-net-build-webgl:latest .
+	docker build -f tools~/Dockerfile.build.webgl -t gilzoide-sqlite-net-build-webgl:latest $(DOCKER_BUILD_ARGS) .
 	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-build-webgl:latest make all-webgl
 docker-all-windows:
-	docker build -f tools~/Dockerfile.build.windows -t gilzoide-sqlite-net-build-windows:latest .
+	docker build -f tools~/Dockerfile.build.windows -t gilzoide-sqlite-net-build-windows:latest $(DOCKER_BUILD_ARGS) .
 	docker run --rm -v "$(CURDIR)":/src -w /src gilzoide-sqlite-net-build-windows:latest make all-windows-mingw
 docker-all-windows-llvm:
 	docker run --rm -v "$(CURDIR)":/src -w /src mstorsjo/llvm-mingw:latest make all-windows-llvm-mingw
+
+# Download builds from GitHub Actions
+download-latest-build:
+	$(eval TMPDIR := $(shell mktemp -d))
+	$(GITHUB_CLI_BIN) run download $(RUN_ID) --repo $(GITHUB_REPO) -p gilzoide-sqlite-net-* -D $(TMPDIR)
+	rsync -r $(TMPDIR)/gilzoide-sqlite-net-windows/* lib/windows/
+	rsync -r $(TMPDIR)/gilzoide-sqlite-net-linux/* lib/linux/
+	rsync -r $(TMPDIR)/gilzoide-sqlite-net-android/* lib/android/
+	rsync -r $(TMPDIR)/gilzoide-sqlite-net-macos/* lib/macos/
+	rsync -r $(TMPDIR)/gilzoide-sqlite-net-webgl/* lib/webgl/
+	$(RM) -r $(TMPDIR)

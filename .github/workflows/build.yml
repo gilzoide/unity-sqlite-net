@@ -1,0 +1,57 @@
+name: Build native libraries
+on: [push, pull_request]
+defaults:
+  run:
+    shell: bash
+
+env:
+  DOCKER_CACHE: ${{ github.workspace }}/.docker-cache
+
+jobs:
+  build_with_docker:
+    name: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            target: docker-all-windows-llvm
+          - platform: linux
+            target: docker-all-linux
+          - platform: android
+            target: docker-all-android
+          - platform: webgl
+            target: docker-all-webgl
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache Docker files
+        uses: actions/cache@v4
+        with:
+          path: $DOCKER_CACHE
+          key: ${{ matrix.platform }}
+      - name: Build
+        run: make -C Plugins ${{ matrix.target }} DOCKER_BUILD_ARGS="--cache-from type=gha --cache-to type=gha,mode=max"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gilzoide-sqlite-net-${{ matrix.platform }}
+          path: |
+            Plugins/lib/${{ matrix.platform }}/**/*.bc
+            Plugins/lib/${{ matrix.platform }}/**/*.dll
+            Plugins/lib/${{ matrix.platform }}/**/*.dylib
+            Plugins/lib/${{ matrix.platform }}/**/*.so
+
+  build_with_macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: make -C Plugins all-apple
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gilzoide-sqlite-net-macos
+          path: |
+            Plugins/lib/macos/*.dylib
