@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009-2021 Krueger Systems, Inc.
+// Copyright (c) 2009-2024 Krueger Systems, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -114,6 +114,7 @@ namespace SQLite
 	public enum SQLiteOpenFlags
 	{
 		ReadOnly = 1, ReadWrite = 2, Create = 4,
+		Uri = 0x40, Memory = 0x80,
 		NoMutex = 0x8000, FullMutex = 0x10000,
 		SharedCache = 0x20000, PrivateCache = 0x40000,
 		ProtectionComplete = 0x00100000,
@@ -159,11 +160,109 @@ namespace SQLite
 		FullTextSearch4 = 0x200
 	}
 
+	public interface ISQLiteConnection : IDisposable
+	{
+		Sqlite3DatabaseHandle Handle { get; }
+		string DatabasePath { get; }
+		int LibVersionNumber { get; }
+		bool TimeExecution { get; set; }
+		bool Trace { get; set; }
+		Action<string> Tracer { get; set; }
+		bool StoreDateTimeAsTicks { get; }
+		bool StoreTimeSpanAsTicks { get; }
+		string DateTimeStringFormat { get; }
+		TimeSpan BusyTimeout { get; set; }
+		IEnumerable<TableMapping> TableMappings { get; }
+		bool IsInTransaction { get; }
+
+		event EventHandler<NotifyTableChangedEventArgs> TableChanged;
+
+		void Backup (string destinationDatabasePath, string databaseName = "main");
+		void BeginTransaction ();
+		void Close ();
+		void Commit ();
+		SQLiteCommand CreateCommand (string cmdText, params object[] ps);
+		SQLiteCommand CreateCommand (string cmdText, Dictionary<string, object> args);
+		int CreateIndex (string indexName, string tableName, string[] columnNames, bool unique = false);
+		int CreateIndex (string indexName, string tableName, string columnName, bool unique = false);
+		int CreateIndex (string tableName, string columnName, bool unique = false);
+		int CreateIndex (string tableName, string[] columnNames, bool unique = false);
+		int CreateIndex<T> (Expression<Func<T, object>> property, bool unique = false);
+		CreateTableResult CreateTable<T> (CreateFlags createFlags = CreateFlags.None);
+		CreateTableResult CreateTable (Type ty, CreateFlags createFlags = CreateFlags.None);
+		CreateTablesResult CreateTables<T, T2> (CreateFlags createFlags = CreateFlags.None)
+			where T : new()
+			where T2 : new();
+		CreateTablesResult CreateTables<T, T2, T3> (CreateFlags createFlags = CreateFlags.None)
+			where T : new()
+			where T2 : new()
+			where T3 : new();
+		CreateTablesResult CreateTables<T, T2, T3, T4> (CreateFlags createFlags = CreateFlags.None)
+			where T : new()
+			where T2 : new()
+			where T3 : new()
+			where T4 : new();
+		CreateTablesResult CreateTables<T, T2, T3, T4, T5> (CreateFlags createFlags = CreateFlags.None)
+			where T : new()
+			where T2 : new()
+			where T3 : new()
+			where T4 : new()
+			where T5 : new();
+		CreateTablesResult CreateTables (CreateFlags createFlags = CreateFlags.None, params Type[] types);
+		IEnumerable<T> DeferredQuery<T> (string query, params object[] args) where T : new();
+		IEnumerable<object> DeferredQuery (TableMapping map, string query, params object[] args);
+		int Delete (object objectToDelete);
+		int Delete<T> (object primaryKey);
+		int Delete (object primaryKey, TableMapping map);
+		int DeleteAll<T> ();
+		int DeleteAll (TableMapping map);
+		int DropTable<T> ();
+		int DropTable (TableMapping map);
+		void EnableLoadExtension (bool enabled);
+		void EnableWriteAheadLogging ();
+		int Execute (string query, params object[] args);
+		T ExecuteScalar<T> (string query, params object[] args);
+		T Find<T> (object pk) where T : new();
+		object Find (object pk, TableMapping map);
+		T Find<T> (Expression<Func<T, bool>> predicate) where T : new();
+		T FindWithQuery<T> (string query, params object[] args) where T : new();
+		object FindWithQuery (TableMapping map, string query, params object[] args);
+		T Get<T> (object pk) where T : new();
+		object Get (object pk, TableMapping map);
+		T Get<T> (Expression<Func<T, bool>> predicate) where T : new();
+		TableMapping GetMapping (Type type, CreateFlags createFlags = CreateFlags.None);
+		TableMapping GetMapping<T> (CreateFlags createFlags = CreateFlags.None);
+		List<SQLiteConnection.ColumnInfo> GetTableInfo (string tableName);
+		int Insert (object obj);
+		int Insert (object obj, Type objType);
+		int Insert (object obj, string extra);
+		int Insert (object obj, string extra, Type objType);
+		int InsertAll (IEnumerable objects, bool runInTransaction = true);
+		int InsertAll (IEnumerable objects, string extra, bool runInTransaction = true);
+		int InsertAll (IEnumerable objects, Type objType, bool runInTransaction = true);
+		int InsertOrReplace (object obj);
+		int InsertOrReplace (object obj, Type objType);
+		List<T> Query<T> (string query, params object[] args) where T : new();
+		List<object> Query (TableMapping map, string query, params object[] args);
+		List<T> QueryScalars<T> (string query, params object[] args);
+		void ReKey (string key);
+		void ReKey (byte[] key);
+		void Release (string savepoint);
+		void Rollback ();
+		void RollbackTo (string savepoint);
+		void RunInTransaction (Action action);
+		string SaveTransactionPoint ();
+		TableQuery<T> Table<T> () where T : new();
+		int Update (object obj);
+		int Update (object obj, Type objType);
+		int UpdateAll (IEnumerable objects, bool runInTransaction = true);
+	}
+
 	/// <summary>
 	/// An open connection to a SQLite database.
 	/// </summary>
 	[Preserve (AllMembers = true)]
-	public partial class SQLiteConnection : IDisposable
+	public partial class SQLiteConnection : ISQLiteConnection
 	{
 		private bool _open;
 		private TimeSpan _busyTimeout;
@@ -364,7 +463,7 @@ namespace SQLite
 		/// if your database is encrypted.
 		/// This only has an effect if you are using the SQLCipher nuget package.
 		/// </summary>
-		/// <param name="key">Ecryption key plain text that is converted to the real encryption key using PBKDF2 key derivation</param>
+		/// <param name="key">Encryption key plain text that is converted to the real encryption key using PBKDF2 key derivation</param>
 		void SetKey (string key)
 		{
 			if (key == null)
@@ -379,7 +478,7 @@ namespace SQLite
 		/// if your database is encrypted.
 		/// This only has an effect if you are using the SQLCipher nuget package.
 		/// </summary>
-		/// <param name="key">256-bit (32 byte) ecryption key data</param>
+		/// <param name="key">256-bit (32 byte) encryption key data</param>
 		void SetKey (byte[] key)
 		{
 			if (key == null)
@@ -388,6 +487,32 @@ namespace SQLite
 				throw new ArgumentException ("Key must be 32 bytes (256-bit) or 48 bytes (384-bit)", nameof (key));
 			var s = String.Join ("", key.Select (x => x.ToString ("X2")));
 			ExecuteScalar<string> ("pragma key = \"x'" + s + "'\"");
+		}
+
+		/// <summary>
+		/// Change the encryption key for a SQLCipher database with "pragma rekey = ...".
+		/// </summary>
+		/// <param name="key">Encryption key plain text that is converted to the real encryption key using PBKDF2 key derivation</param>
+		public void ReKey (string key)
+		{
+			if (key == null)
+				throw new ArgumentNullException(nameof(key));
+			var q = Quote(key);
+			ExecuteScalar<string>("pragma rekey = " + q);
+		}
+
+		/// <summary>
+		/// Change the encryption key for a SQLCipher database.
+		/// </summary>
+		/// <param name="key">256-bit (32 byte) or 384-bit (48 bytes) encryption key data</param>
+		public void ReKey (byte[] key)
+		{
+			if (key == null)
+				throw new ArgumentNullException(nameof(key));
+			if (key.Length != 32 && key.Length != 48)
+				throw new ArgumentException ("Key must be 32 bytes (256-bit) or 48 bytes (384-bit)", nameof (key));
+			var s = String.Join("", key.Select(x => x.ToString("X2")));
+			ExecuteScalar<string>("pragma rekey = \"x'" + s + "'\"");
 		}
 
 		/// <summary>
@@ -1894,7 +2019,7 @@ namespace SQLite
 			}
 			ps.Add (pk.GetValue (obj));
 			var q = string.Format ("update \"{0}\" set {1} where \"{2}\" = ? ", map.TableName, string.Join (",", (from c in cols
-																											  select "\"" + c.Name + "\" = ? ").ToArray ()), pk.Name);
+																												  select "\"" + c.Name + "\" = ? ").ToArray ()), pk.Name);
 
 			try {
 				rowsAffected = Execute (q, ps.ToArray ());
@@ -1905,7 +2030,7 @@ namespace SQLite
 					throw NotNullConstraintViolationException.New (ex, map, obj);
 				}
 
-				throw ex;
+				throw;
 			}
 
 			if (rowsAffected > 0)
@@ -2349,7 +2474,7 @@ namespace SQLite
 	{
 	}
 
-	[AttributeUsage (AttributeTargets.Property)]
+	[AttributeUsage (AttributeTargets.Property, AllowMultiple = true)]
 	public class IndexedAttribute : Attribute
 	{
 		public string Name { get; set; }
@@ -2786,7 +2911,7 @@ namespace SQLite
 		public static string SqlType (TableMapping.Column p, bool storeDateTimeAsTicks, bool storeTimeSpanAsTicks)
 		{
 			var clrType = p.ColumnType;
-			if (clrType == typeof (Boolean) || clrType == typeof (Byte) || clrType == typeof (UInt16) || clrType == typeof (SByte) || clrType == typeof (Int16) || clrType == typeof (Int32) || clrType == typeof (UInt32) || clrType == typeof (Int64)) {
+			if (clrType == typeof (Boolean) || clrType == typeof (Byte) || clrType == typeof (UInt16) || clrType == typeof (SByte) || clrType == typeof (Int16) || clrType == typeof (Int32) || clrType == typeof (UInt32) || clrType == typeof (Int64) || clrType == typeof (UInt64)) {
 				return "integer";
 			}
 			else if (clrType == typeof (Single) || clrType == typeof (Double) || clrType == typeof (Decimal)) {
@@ -3185,7 +3310,7 @@ namespace SQLite
 				else if (value is Boolean) {
 					SQLite3.BindInt (stmt, index, (bool)value ? 1 : 0);
 				}
-				else if (value is UInt32 || value is Int64) {
+				else if (value is UInt32 || value is Int64 || value is UInt64) {
 					SQLite3.BindInt64 (stmt, index, Convert.ToInt64 (value));
 				}
 				else if (value is Single || value is Double || value is Decimal) {
@@ -3318,6 +3443,9 @@ namespace SQLite
 				}
 				else if (clrType == typeof (Int64)) {
 					return SQLite3.ColumnInt64 (stmt, index);
+				}
+				else if (clrType == typeof (UInt64)) {
+					return (ulong)SQLite3.ColumnInt64 (stmt, index);
 				}
 				else if (clrType == typeof (UInt32)) {
 					return (uint)SQLite3.ColumnInt64 (stmt, index);
@@ -3461,6 +3589,12 @@ namespace SQLite
 			else if (clrType == typeof (Int64)) {
 				fastSetter = CreateNullableTypedSetterDelegate<T, Int64> (column, (stmt, index) => {
 					return SQLite3.ColumnInt64 (stmt, index);
+				});
+			}
+			else if (clrType == typeof(UInt64))
+			{
+				fastSetter = CreateNullableTypedSetterDelegate<T, UInt64>(column, (stmt, index) => {
+					return (ulong)SQLite3.ColumnInt64(stmt, index);
 				});
 			}
 			else if (clrType == typeof (UInt32)) {
