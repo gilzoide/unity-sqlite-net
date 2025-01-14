@@ -5,7 +5,7 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
 
 
 ## Features
-- [SQLite-net v1.8.116](https://github.com/praeclarum/sqlite-net/tree/v1.8.116)
+- [SQLite-net v1.9.172](https://github.com/praeclarum/sqlite-net/tree/v1.9.172)
   + Both synchronous and asynchronous APIs are available
   + `SQLiteConnection.Serialize` extension method for serializing a database to `byte[]` (reference: [SQLite Serialization](https://www.sqlite.org/c3ref/serialize.html)).
   + `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`, `NativeArray<byte>` or `ReadOnlySpan<byte>`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
