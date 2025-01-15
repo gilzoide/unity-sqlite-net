@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.1.2...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.0...HEAD)
+
+
+## [1.2.0](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.0)
 ### Added
 - GitHub Action that builds all native libraries
 - Support for macOS with Intel CPU
