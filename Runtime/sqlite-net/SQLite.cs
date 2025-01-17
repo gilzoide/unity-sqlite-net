@@ -190,7 +190,9 @@ namespace SQLite
         int CreateIndex(string tableName, string[] columnNames, bool unique = false);
         int CreateIndex<T>(Expression<Func<T, object>> property, bool unique = false);
         CreateTableResult CreateTable<T>(CreateFlags createFlags = CreateFlags.None);
+        CreateTableResult CreateTable<T>(string tableName, CreateFlags createFlags = CreateFlags.None);
         CreateTableResult CreateTable(Type ty, CreateFlags createFlags = CreateFlags.None);
+        CreateTableResult CreateTable(Type ty, string tableName, CreateFlags createFlags = CreateFlags.None);
         CreateTablesResult CreateTables<T, T2>(CreateFlags createFlags = CreateFlags.None)
             where T : new()
             where T2 : new();
@@ -674,6 +676,11 @@ namespace SQLite
             return CreateTable(typeof(T), createFlags);
         }
 
+        public CreateTableResult CreateTable<T>(string tableName, CreateFlags createFlags = CreateFlags.None)
+        {
+            return CreateTable(typeof(T), tableName, createFlags);
+        }
+
         /// <summary>
         /// Executes a "create table if not exists" on the database. It also
         /// creates any specified indexes on the columns of the table. It uses
@@ -695,6 +702,25 @@ namespace SQLite
                 throw new Exception(string.Format("Cannot create a table without columns (does '{0}' have public properties?)", ty.FullName));
             }
 
+            return CreateTable(map, createFlags);
+        }
+
+        public CreateTableResult CreateTable(Type ty, string tableName, CreateFlags createFlags = CreateFlags.None)
+        {
+            var map = GetMapping(ty, createFlags, tableName);
+
+            // Present a nice error if no columns specified
+            if (map.Columns.Length == 0)
+            {
+                throw new Exception(string.Format("Cannot create a table without columns (does '{0}' have public properties?)", ty.FullName));
+            }
+
+            return CreateTable(map, createFlags);
+        }
+
+
+        private CreateTableResult CreateTable(TableMapping map, CreateFlags createFlags = CreateFlags.None)
+        {
             // Check if the table exists
             var result = CreateTableResult.Created;
             var existingCols = GetTableInfo(map.TableName);
