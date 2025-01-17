@@ -231,8 +231,8 @@ namespace SQLite
         T Get<T>(object pk) where T : new();
         object Get(object pk, TableMapping map);
         T Get<T>(Expression<Func<T, bool>> predicate) where T : new();
-        TableMapping GetMapping(Type type, CreateFlags createFlags = CreateFlags.None);
-        TableMapping GetMapping<T>(CreateFlags createFlags = CreateFlags.None);
+        TableMapping GetMapping(Type type, CreateFlags createFlags = CreateFlags.None, string tableName = "");
+        TableMapping GetMapping<T>(CreateFlags createFlags = CreateFlags.None, string tableName = "");
         List<SQLiteConnection.ColumnInfo> GetTableInfo(string tableName);
         int Insert(object obj);
         int Insert(object obj, Type objType);
@@ -588,23 +588,23 @@ namespace SQLite
         /// The mapping represents the schema of the columns of the database and contains
         /// methods to set and get properties of objects.
         /// </returns>
-        public TableMapping GetMapping(Type type, CreateFlags createFlags = CreateFlags.None)
+        public TableMapping GetMapping(Type type, CreateFlags createFlags = CreateFlags.None, string tableName = "")
         {
             TableMapping map;
-            var key = type.FullName;
+            var key = string.IsNullOrEmpty(tableName) ? type.FullName : tableName;
             lock (_mappings)
             {
                 if (_mappings.TryGetValue(key, out map))
                 {
                     if (createFlags != CreateFlags.None && createFlags != map.CreateFlags)
                     {
-                        map = new TableMapping(type, createFlags);
+                        map = new TableMapping(type, createFlags, tableName);
                         _mappings[key] = map;
                     }
                 }
                 else
                 {
-                    map = new TableMapping(type, createFlags);
+                    map = new TableMapping(type, createFlags, tableName);
                     _mappings.Add(key, map);
                 }
             }
@@ -621,9 +621,9 @@ namespace SQLite
         /// The mapping represents the schema of the columns of the database and contains
         /// methods to set and get properties of objects.
         /// </returns>
-        public TableMapping GetMapping<T>(CreateFlags createFlags = CreateFlags.None)
+        public TableMapping GetMapping<T>(CreateFlags createFlags = CreateFlags.None, string tableName = "")
         {
-            return GetMapping(typeof(T), createFlags);
+            return GetMapping(typeof(T), createFlags, tableName);
         }
 
         private struct IndexedColumn
