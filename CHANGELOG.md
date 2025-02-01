@@ -1,5 +1,7 @@
 # Changelog
 ## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.0...HEAD)
+### Fixed
+- Support for struct return types in queries
 
 
 ## [1.2.0](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.0)
