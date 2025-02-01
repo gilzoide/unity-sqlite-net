@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.0...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.1...HEAD)
+
+
+## [1.2.1](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.1)
 ### Added
 - Add support for updating a struct passed to `Insert` with overload accepting `ref T`
 
