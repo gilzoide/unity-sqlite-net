@@ -3146,7 +3146,7 @@ namespace SQLite
 					for (int i = 0; i < cols.Length; i++) {						
 						var name = SQLite3.ColumnName16 (stmt, i);
 						cols[i] = map.FindColumn (name);
-						if (cols[i] != null)
+						if (!typeof(T).IsValueType && cols[i] != null)
 							if (getSetter != null) {
 								fastColumnSetters[i] = (Action<object, Sqlite3Statement, int>)getSetter.Invoke(null, new object[]{ _conn, cols[i]});
 							}

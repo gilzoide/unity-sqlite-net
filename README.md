@@ -111,7 +111,8 @@ Third-party code:
 - `LibraryPath` is made public.
   This is useful for libraries that want to bind additional native SQLite functions via P/Invoke.
 - `SQLiteConnection.Quote` is made public.
-  This is be useful for libraries making raw queries.
+  This is useful for libraries making raw queries.
 - `SQLite3.SetDirectory` is only defined in Windows platforms.
 - Adds a `[RequiredMember]` attribute to `ColumnInfo.Name` property, fixing errors on columns when managed code stripping is enabled.
 - Changes the `TaskScheduler` used by the async API on WebGL to one that executes tasks on Unity's main thread.
+- Fix support for struct return types in queries
