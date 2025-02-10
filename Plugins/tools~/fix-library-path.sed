@@ -23,7 +23,6 @@
 	a\
 #endif
 }
-	
 
 # Make Quote function public, for libraries making raw queries
 s/static string Quote/public static string Quote/
@@ -37,3 +36,6 @@ s/Column ("name")/Column ("name"), UnityEngine.Scripting.RequiredMember/
 
 # Use main thread TaskScheduler in WebGL
 s/TaskScheduler\.Default/SQLiteAsyncExtensions.TaskScheduler/
+
+# Disable fast setters when ObjectType is struct
+s/cols\[i] != null/!typeof(T).IsValueType \&\& cols[i] != null/

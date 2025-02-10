@@ -29,7 +29,7 @@ Either:
   ```
 - Install using the [Unity Package Manager](https://docs.unity3d.com/Manual/upm-ui-giturl.html) with the following URL:
   ```
-  https://github.com/gilzoide/unity-sqlite-net.git#1.2.0
+  https://github.com/gilzoide/unity-sqlite-net.git#1.2.1
   ```
 - Clone this repository or download a snapshot of it directly inside your project's `Assets` or `Packages` folder.
 
@@ -111,7 +111,8 @@ Third-party code:
 - `LibraryPath` is made public.
   This is useful for libraries that want to bind additional native SQLite functions via P/Invoke.
 - `SQLiteConnection.Quote` is made public.
-  This is be useful for libraries making raw queries.
+  This is useful for libraries making raw queries.
 - `SQLite3.SetDirectory` is only defined in Windows platforms.
 - Adds a `[RequiredMember]` attribute to `ColumnInfo.Name` property, fixing errors on columns when managed code stripping is enabled.
 - Changes the `TaskScheduler` used by the async API on WebGL to one that executes tasks on Unity's main thread.
+- Fix support for struct return types in queries

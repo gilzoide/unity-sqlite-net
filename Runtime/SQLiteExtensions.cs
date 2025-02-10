@@ -47,7 +47,7 @@ namespace SQLite
 
         [DllImport(LibraryPath, EntryPoint = "sqlite3_deserialize", CallingConvention = CallingConvention.Cdecl)]
         public static extern Result Deserialize(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string zSchema, byte[] pData, long szDb, long szBuf, DeserializeFlags mFlags);
-        
+
         [DllImport(LibraryPath, EntryPoint = "sqlite3_deserialize", CallingConvention = CallingConvention.Cdecl)]
         public static unsafe extern Result Deserialize(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string zSchema, void* pData, long szDb, long szBuf, DeserializeFlags mFlags);
 
@@ -79,6 +79,41 @@ namespace SQLite
 #if UNITY_WEBGL && !UNITY_EDITOR
             idbvfs_register(1);
 #endif
+        }
+    }
+
+    public static class ISQLiteConnectionExtensions
+    {
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj)
+        {
+            object boxed = obj;
+            int result = connection.Insert(boxed);
+            obj = (T)boxed;
+            return result;
+        }
+
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, Type objType)
+        {
+            object boxed = obj;
+            int result = connection.Insert(boxed, objType);
+            obj = (T)boxed;
+            return result;
+        }
+
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string extra)
+        {
+            object boxed = obj;
+            int result = connection.Insert(boxed, extra);
+            obj = (T)boxed;
+            return result;
+        }
+
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string extra, Type objType)
+        {
+            object boxed = obj;
+            int result = connection.Insert(boxed, extra, objType);
+            obj = (T)boxed;
+            return result;
         }
     }
 }
