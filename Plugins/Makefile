@@ -92,7 +92,7 @@ lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
 
 # Source
 $(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs $(SQLITE_NET_SED_SCRIPT)
-	cat $< | sed -f $(SQLITE_NET_SED_SCRIPT) > $@
+	cat $< | sed -E -f $(SQLITE_NET_SED_SCRIPT) > $@
 
 $(SQLITE_NET_DEST)/License.txt: sqlite-net~/License.txt
 	cp $< $@
