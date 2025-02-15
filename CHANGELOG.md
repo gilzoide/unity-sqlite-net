@@ -2,6 +2,11 @@
 ## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.1...HEAD)
 ### Changed
 - Updated SQLite to 3.49.0
+- Compile SQLite from source in WebGL platform
+
+### Fixed
+- Support for WebGL builds with any native build configuration
+- Make all column-related attributes inherit Unity's `PreserveAttribute`, avoiding properties being stripped from builds
 
 
 ## [1.2.1](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.1)
