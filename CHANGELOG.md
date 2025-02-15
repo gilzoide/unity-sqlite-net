@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.1...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.2...HEAD)
+
+
+## [1.2.2](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.2)
 ### Changed
 - Updated SQLite to 3.49.0
 - Compile SQLite from source in WebGL platform
