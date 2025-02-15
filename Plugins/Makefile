@@ -24,23 +24,14 @@ BUILD_DIRS = \
 	lib/webgl
 
 SQLITE_SRC = sqlite-amalgamation/sqlite3.c
-SQLITE_CFLAGS_SRC = tools~/sqlite-cflags.txt
 SQLITE_NET_SRC = $(wildcard sqlite-net~/src/*.cs) sqlite-net~/LICENSE.txt
 SQLITE_NET_DEST = ../Runtime/sqlite-net
 SQLITE_NET_SED_SCRIPT = tools~/fix-library-path.sed
-
-ifneq ($(findstring 4.,$(MAKE_VERSION)),)
-	SQLITE_CFLAGS = $(file < $(SQLITE_CFLAGS_SRC))
-else
-	SQLITE_CFLAGS = $(shell cat $(SQLITE_CFLAGS_SRC))
-endif
-CFLAGS += $(SQLITE_CFLAGS)
 
 $(BUILD_DIRS):
 	mkdir -p $@
 
 .PRECIOUS: lib/%/sqlite3.o~
-lib/%/sqlite3.o~: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
 lib/%/sqlite3.o~: $(SQLITE_SRC) | lib/%
 	$(CC) -c -o $@ $< $(CFLAGS)
 
@@ -64,11 +55,6 @@ ifdef MACOS_CODESIGN_SIGNATURE
 	$(CODESIGN) -s "$(MACOS_CODESIGN_SIGNATURE)" $@
 endif
 
-# iOS/tvOS/visionOS compile flags
-sqlite-amalgamation/sqlite3.c.meta: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
-sqlite-amalgamation/sqlite3.c.meta:
-	sed -i '' -E -e 's/(\s*CompileFlags:).*/\1 $(SQLITE_CFLAGS)/' $@
-
 # Android
 check-ndk-root:
 ifndef ANDROID_NDK_ROOT
@@ -85,10 +71,6 @@ lib/android/arm32/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)
 lib/android/x86_64/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/x86_64-linux-android21-clang)
 lib/android/x86/libgilzoide-sqlite-net.so: CC = $(wildcard $(ANDROID_NDK_ROOT)/toolchains/llvm/prebuilt/*/bin/i686-linux-android21-clang)
 
-# WebGL
-lib/webgl/libgilzoide-sqlite-net.bc: .EXTRA_PREREQS = $(SQLITE_CFLAGS_SRC)
-lib/webgl/libgilzoide-sqlite-net.bc: $(SQLITE_SRC) | lib/webgl
-	$(EMCC) -c -emit-llvm -o $@ $< $(CFLAGS)
 
 # Source
 $(SQLITE_NET_DEST)/%.cs: sqlite-net~/src/%.cs $(SQLITE_NET_SED_SCRIPT)
@@ -128,7 +110,7 @@ webgl: lib/webgl/libgilzoide-sqlite-net.bc
 source: $(SQLITE_NET_DEST)/License.txt $(SQLITE_NET_DEST)/AssemblyInfo.cs $(SQLITE_NET_DEST)/SQLite.cs $(SQLITE_NET_DEST)/SQLiteAsync.cs
 
 all-android: android-arm64 android-arm32 android-x86_64 android-x86
-all-apple: macos-universal sqlite-amalgamation/sqlite3.c.meta
+all-apple: macos-universal
 all-linux: linux-x86_64
 all-webgl: webgl
 all-windows: windows-x86_64 windows-x86
