@@ -1,3 +1,5 @@
+#include "sqlite3_defines.h"
+
 /*
 ** 2006 June 7
 **
