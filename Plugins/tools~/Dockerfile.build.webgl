@@ -1,3 +1,0 @@
-# syntax=docker/dockerfile:1
-# Using Emscripten 1.X for Unity <= 2021.2 support. It still works in 2021.3+.
-FROM emscripten/emsdk:1.40.1
