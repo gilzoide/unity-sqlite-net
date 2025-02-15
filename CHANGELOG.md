@@ -1,5 +1,7 @@
 # Changelog
 ## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.1...HEAD)
+### Changed
+- Updated SQLite to 3.49.0
 
 
 ## [1.2.1](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.1)

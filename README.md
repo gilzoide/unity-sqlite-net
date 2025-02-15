@@ -9,7 +9,7 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
   + Both synchronous and asynchronous APIs are available
   + `SQLiteConnection.Serialize` extension method for serializing a database to `byte[]` (reference: [SQLite Serialization](https://www.sqlite.org/c3ref/serialize.html)).
   + `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`, `NativeArray<byte>` or `ReadOnlySpan<byte>`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
-- [SQLite 3.48.0](https://sqlite.org/releaselog/3_48_0.html)
+- [SQLite 3.49.0](https://sqlite.org/releaselog/3_49_0.html)
   + Enabled modules: [R\*Tree](https://sqlite.org/rtree.html), [Geopoly](https://sqlite.org/geopoly.html), [FTS5](https://sqlite.org/fts5.html), [Built-In Math Functions](https://www.sqlite.org/lang_mathfunc.html)
   + Supports Windows, Linux, macOS, WebGL, Android, iOS, tvOS and visionOS platforms
   + Supports persisting data in WebGL builds by using a [custom VFS backed by Indexed DB](https://github.com/gilzoide/idbvfs).
