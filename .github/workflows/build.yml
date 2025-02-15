@@ -21,8 +21,6 @@ jobs:
             target: docker-all-linux
           - platform: android
             target: docker-all-android
-          - platform: webgl
-            target: docker-all-webgl
     steps:
       - uses: actions/checkout@v3
       - name: Cache Docker files
@@ -37,7 +35,6 @@ jobs:
         with:
           name: gilzoide-sqlite-net-${{ matrix.platform }}
           path: |
-            Plugins/lib/${{ matrix.platform }}/**/*.bc
             Plugins/lib/${{ matrix.platform }}/**/*.dll
             Plugins/lib/${{ matrix.platform }}/**/*.dylib
             Plugins/lib/${{ matrix.platform }}/**/*.so
