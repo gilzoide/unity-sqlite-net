@@ -2454,7 +2454,7 @@ namespace SQLite
 	}
 
 	[AttributeUsage (AttributeTargets.Property)]
-	public class ColumnAttribute : Attribute
+	public class ColumnAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 		public string Name { get; set; }
 
@@ -2465,17 +2465,17 @@ namespace SQLite
 	}
 
 	[AttributeUsage (AttributeTargets.Property)]
-	public class PrimaryKeyAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class PrimaryKeyAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 	}
 
 	[AttributeUsage (AttributeTargets.Property)]
-	public class AutoIncrementAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class AutoIncrementAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 	}
 
 	[AttributeUsage (AttributeTargets.Property, AllowMultiple = true)]
-	public class IndexedAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class IndexedAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 		public string Name { get; set; }
 		public int Order { get; set; }
@@ -2507,7 +2507,7 @@ namespace SQLite
 	}
 
 	[AttributeUsage (AttributeTargets.Property)]
-	public class MaxLengthAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class MaxLengthAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 		public int Value { get; private set; }
 
@@ -2529,7 +2529,7 @@ namespace SQLite
 	/// "BINARY" is the default.
 	/// </summary>
 	[AttributeUsage (AttributeTargets.Property)]
-	public class CollationAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class CollationAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 		public string Value { get; private set; }
 
@@ -2540,12 +2540,12 @@ namespace SQLite
 	}
 
 	[AttributeUsage (AttributeTargets.Property)]
-	public class NotNullAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class NotNullAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 	}
 
 	[AttributeUsage (AttributeTargets.Enum)]
-	public class StoreAsTextAttribute : UnityEngine.Scripting.RequiredMemberAttribute
+	public class StoreAsTextAttribute : UnityEngine.Scripting.PreserveAttribute
 	{
 	}
 

@@ -30,9 +30,9 @@ s/static string Quote/public static string Quote/
 # Make SQLite3 class partial, to extend in another file
 s/class SQLite3/partial class SQLite3/
 
-# Make column attributes inherit Unity's RequiredMemberAttribute
+# Make column attributes inherit Unity's PreserveAttribute
 # This fixes managed code stripping removing getter/setter methods
-s/public class (PrimaryKey|AutoIncrement|Indexed|MaxLength|Collation|NotNull|StoreAsText)Attribute : Attribute/public class \1Attribute : UnityEngine.Scripting.RequiredMemberAttribute/
+s/public class (Column|PrimaryKey|AutoIncrement|Indexed|MaxLength|Collation|NotNull|StoreAsText)Attribute : Attribute/public class \1Attribute : UnityEngine.Scripting.PreserveAttribute/
 
 # Use main thread TaskScheduler in WebGL
 s/TaskScheduler\.Default/SQLiteAsyncExtensions.TaskScheduler/
