@@ -238,9 +238,9 @@ namespace SQLite
         TableMapping GetMapping<T>(CreateFlags createFlags = CreateFlags.None);
         TableMapping GetMapping<T>(string tableName, CreateFlags createFlags = CreateFlags.None);
         List<SQLiteConnection.ColumnInfo> GetTableInfo(string tableName);
-        int Insert(object obj);
-        int Insert(object obj, Type objType);
-        int Insert(object obj, string extra);
+        int Insert(object obj, string tableName = "");
+        int Insert(object obj, Type objType, string tableName = "");
+        int Insert(object obj, string extra, string tableName = "");
         int Insert(object obj, string extra, Type objType, string tableName = "");
         int InsertAll(IEnumerable objects, bool runInTransaction = true);
         int InsertAll(IEnumerable objects, string extra, bool runInTransaction = true);
@@ -1870,13 +1870,13 @@ namespace SQLite
         /// <returns>
         /// The number of rows added to the table.
         /// </returns>
-        public int Insert(object obj)
+        public int Insert(object obj, string tableName = "")
         {
             if (obj == null)
             {
                 return 0;
             }
-            return Insert(obj, "", Orm.GetType(obj));
+            return Insert(obj, "", Orm.GetType(obj), tableName);
         }
 
         /// <summary>
@@ -1916,9 +1916,9 @@ namespace SQLite
         /// <returns>
         /// The number of rows added to the table.
         /// </returns>
-        public int Insert(object obj, Type objType)
+        public int Insert(object obj, Type objType, string tableName = "")
         {
-            return Insert(obj, "", objType);
+            return Insert(obj, "", objType, tableName);
         }
 
         /// <summary>
@@ -1957,13 +1957,13 @@ namespace SQLite
         /// <returns>
         /// The number of rows added to the table.
         /// </returns>
-        public int Insert(object obj, string extra)
+        public int Insert(object obj, string extra, string tableName = "")
         {
             if (obj == null)
             {
                 return 0;
             }
-            return Insert(obj, extra, Orm.GetType(obj));
+            return Insert(obj, extra, Orm.GetType(obj), tableName);
         }
 
         /// <summary>

@@ -84,34 +84,34 @@ namespace SQLite
 
     public static class ISQLiteConnectionExtensions
     {
-        public static int Insert<T>(this ISQLiteConnection connection, ref T obj)
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string tableName = "")
         {
             object boxed = obj;
-            int result = connection.Insert(boxed);
+            int result = connection.Insert(boxed, tableName);
             obj = (T)boxed;
             return result;
         }
 
-        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, Type objType)
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, Type objType, string tableName = "")
         {
             object boxed = obj;
-            int result = connection.Insert(boxed, objType);
+            int result = connection.Insert(boxed, objType, tableName);
             obj = (T)boxed;
             return result;
         }
 
-        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string extra)
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string extra, string tableName = "")
         {
             object boxed = obj;
-            int result = connection.Insert(boxed, extra);
+            int result = connection.Insert(boxed, extra, tableName);
             obj = (T)boxed;
             return result;
         }
 
-        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string extra, Type objType)
+        public static int Insert<T>(this ISQLiteConnection connection, ref T obj, string extra, Type objType, string tableName = "")
         {
             object boxed = obj;
-            int result = connection.Insert(boxed, extra, objType);
+            int result = connection.Insert(boxed, extra, objType, tableName);
             obj = (T)boxed;
             return result;
         }
