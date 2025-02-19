@@ -1,5 +1,23 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.0...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.2...HEAD)
+
+
+## [1.2.2](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.2)
+### Changed
+- Updated SQLite to 3.49.0
+- Compile SQLite from source in WebGL platform
+
+### Fixed
+- Support for WebGL builds with any native build configuration
+- Make all column-related attributes inherit Unity's `PreserveAttribute`, avoiding properties being stripped from builds
+
+
+## [1.2.1](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.1)
+### Added
+- Add support for updating a struct passed to `Insert` with overload accepting `ref T`
+
+### Fixed
+- Support for struct return types in queries
 
 
 ## [1.2.0](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.0)

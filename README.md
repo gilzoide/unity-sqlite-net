@@ -9,10 +9,9 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
   + Both synchronous and asynchronous APIs are available
   + `SQLiteConnection.Serialize` extension method for serializing a database to `byte[]` (reference: [SQLite Serialization](https://www.sqlite.org/c3ref/serialize.html)).
   + `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`, `NativeArray<byte>` or `ReadOnlySpan<byte>`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
-- [SQLite 3.48.0](https://sqlite.org/releaselog/3_48_0.html)
+- [SQLite 3.49.0](https://sqlite.org/releaselog/3_49_0.html)
   + Enabled modules: [R\*Tree](https://sqlite.org/rtree.html), [Geopoly](https://sqlite.org/geopoly.html), [FTS5](https://sqlite.org/fts5.html), [Built-In Math Functions](https://www.sqlite.org/lang_mathfunc.html)
-  + Prebuilt for Windows, Linux, macOS, Android and WebGL
-  + Built from source in iOS, tvOS and visionOS projects
+  + Supports Windows, Linux, macOS, WebGL, Android, iOS, tvOS and visionOS platforms
   + Supports persisting data in WebGL builds by using a [custom VFS backed by Indexed DB](https://github.com/gilzoide/idbvfs).
 
 
@@ -29,7 +28,7 @@ Either:
   ```
 - Install using the [Unity Package Manager](https://docs.unity3d.com/Manual/upm-ui-giturl.html) with the following URL:
   ```
-  https://github.com/gilzoide/unity-sqlite-net.git#1.2.1
+  https://github.com/gilzoide/unity-sqlite-net.git#1.2.2
   ```
 - Clone this repository or download a snapshot of it directly inside your project's `Assets` or `Packages` folder.
 
@@ -113,6 +112,6 @@ Third-party code:
 - `SQLiteConnection.Quote` is made public.
   This is useful for libraries making raw queries.
 - `SQLite3.SetDirectory` is only defined in Windows platforms.
-- Adds a `[RequiredMember]` attribute to `ColumnInfo.Name` property, fixing errors on columns when managed code stripping is enabled.
+- Makes all column related attributes inherit `PreserveAttribute`, fixing errors on columns when managed code stripping is enabled.
 - Changes the `TaskScheduler` used by the async API on WebGL to one that executes tasks on Unity's main thread.
 - Fix support for struct return types in queries

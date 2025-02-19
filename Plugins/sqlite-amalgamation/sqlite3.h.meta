@@ -21,7 +21,7 @@ PluginImporter:
         Exclude Linux64: 1
         Exclude OSXUniversal: 1
         Exclude VisionOS: 0
-        Exclude WebGL: 1
+        Exclude WebGL: 0
         Exclude Win: 1
         Exclude Win64: 1
         Exclude iOS: 0
@@ -63,6 +63,11 @@ PluginImporter:
         CPU: None
   - first:
       VisionOS: VisionOS
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      WebGL: WebGL
     second:
       enabled: 1
       settings: {}
