@@ -188,7 +188,7 @@ namespace SQLite
 		int CreateIndex(string indexName, string tableName, string columnName, bool unique = false);
 		int CreateIndex(string tableName, string columnName, bool unique = false);
 		int CreateIndex(string tableName, string[] columnNames, bool unique = false);
-		int CreateIndex<T>(Expression<Func<T, object>> property, bool unique = false, string tableName = "");
+		int CreateIndex<T>(Expression<Func<T, object>> property, bool unique = false, string tableName = null);
 		CreateTableResult CreateTable<T>(CreateFlags createFlags = CreateFlags.None);
 		CreateTableResult CreateTable<T>(string tableName, CreateFlags createFlags = CreateFlags.None);
 		CreateTableResult CreateTable(Type ty, CreateFlags createFlags = CreateFlags.None);
@@ -214,40 +214,42 @@ namespace SQLite
 		CreateTablesResult CreateTables(CreateFlags createFlags = CreateFlags.None, params Type[] types);
 		IEnumerable<T> DeferredQuery<T>(string query, params object[] args) where T : new();
 		IEnumerable<object> DeferredQuery(TableMapping map, string query, params object[] args);
-		int Delete(object objectToDelete, string tableName = "");
-		int Delete<T>(object primaryKey, string tableName = "");
+		int Delete(object objectToDelete, string tableName = null);
+		int Delete<T>(object primaryKey, string tableName = null);
 		int Delete(object primaryKey, TableMapping map);
-		int DeleteAll<T>(string tableName = "");
+		int DeleteAll<T>(string tableName = null);
 		int DeleteAll(TableMapping map);
-		int DropTable<T>(string tableName = "");
+		int DropTable<T>(string tableName = null);
 		int DropTable(TableMapping map);
 		void EnableLoadExtension(bool enabled);
 		void EnableWriteAheadLogging();
 		int Execute(string query, params object[] args);
 		T ExecuteScalar<T>(string query, params object[] args);
-		T Find<T>(object pk, string tableName = "") where T : new();
+		T Find<T>(object pk, string tableName = null) where T : new();
 		object Find(object pk, TableMapping map);
-		T Find<T>(Expression<Func<T, bool>> predicate, string tableName = "") where T : new();
+		T Find<T>(Expression<Func<T, bool>> predicate, string tableName = null) where T : new();
 		T FindWithQuery<T>(string query, params object[] args) where T : new();
+		T FindWithQuery<T>(string tableName, string query, params object[] args) where T : new();
 		object FindWithQuery(TableMapping map, string query, params object[] args);
-		T Get<T>(object pk, string tableName = "") where T : new();
+		T Get<T>(object pk, string tableName = null) where T : new();
 		object Get(object pk, TableMapping map);
-		T Get<T>(Expression<Func<T, bool>> predicate, string tableName = "") where T : new();
+		T Get<T>(Expression<Func<T, bool>> predicate, string tableName = null) where T : new();
 		TableMapping GetMapping(Type type, CreateFlags createFlags = CreateFlags.None);
 		TableMapping GetMapping(Type type, string tableName, CreateFlags createFlags = CreateFlags.None);
 		TableMapping GetMapping<T>(CreateFlags createFlags = CreateFlags.None);
 		TableMapping GetMapping<T>(string tableName, CreateFlags createFlags = CreateFlags.None);
 		List<SQLiteConnection.ColumnInfo> GetTableInfo(string tableName);
-		int Insert(object obj, string tableName = "");
-		int Insert(object obj, Type objType, string tableName = "");
-		int Insert(object obj, string extra, string tableName = "");
-		int Insert(object obj, string extra, Type objType, string tableName = "");
+		int Insert(object obj, string tableName = null);
+		int Insert(object obj, Type objType, string tableName = null);
+		int Insert(object obj, string extra, string tableName = null);
+		int Insert(object obj, string extra, Type objType, string tableName = null);
 		int InsertAll(IEnumerable objects, bool runInTransaction = true);
 		int InsertAll(IEnumerable objects, string extra, bool runInTransaction = true);
 		int InsertAll(IEnumerable objects, Type objType, bool runInTransaction = true);
-		int InsertOrReplace(object obj, string tableName = "");
-		int InsertOrReplace(object obj, Type objType, string tableName = "");
+		int InsertOrReplace(object obj, string tableName = null);
+		int InsertOrReplace(object obj, Type objType, string tableName = null);
 		List<T> Query<T>(string query, params object[] args) where T : new();
+		List<T> Query<T>(string tableName, string query, params object[] args) where T : new();
 		List<object> Query(TableMapping map, string query, params object[] args);
 		List<T> QueryScalars<T>(string query, params object[] args);
 		void ReKey(string key);
@@ -257,9 +259,9 @@ namespace SQLite
 		void RollbackTo(string savepoint);
 		void RunInTransaction(Action action);
 		string SaveTransactionPoint();
-		TableQuery<T> Table<T>(string tableName = "") where T : new();
-		int Update(object obj, string tableName = "");
-		int Update(object obj, Type objType, string tableName = "");
+		TableQuery<T> Table<T>(string tableName = null) where T : new();
+		int Update(object obj, string tableName = null);
+		int Update(object obj, Type objType, string tableName = null);
 		int UpdateAll(IEnumerable objects, bool runInTransaction = true);
 	}
 
@@ -657,7 +659,7 @@ namespace SQLite
 		/// <summary>
 		/// Executes a "drop table" on the database.  This is non-recoverable.
 		/// </summary>
-		public int DropTable<T>(string tableName = "")
+		public int DropTable<T>(string tableName = null)
 		{
 			return DropTable(GetMapping(typeof(T), tableName));
 		}
@@ -957,7 +959,7 @@ namespace SQLite
 		/// <param name="property">Property to index</param>
 		/// <param name="unique">Whether the index should be unique</param>
 		/// <returns>Zero on success.</returns>
-		public int CreateIndex<T>(Expression<Func<T, object>> property, bool unique = false, string tableName = "")
+		public int CreateIndex<T>(Expression<Func<T, object>> property, bool unique = false, string tableName = null)
 		{
 			MemberExpression mx;
 			if (property.Body.NodeType == ExpressionType.Convert)
@@ -1215,6 +1217,31 @@ namespace SQLite
 		/// <summary>
 		/// Creates a SQLiteCommand given the command text (SQL) with arguments. Place a '?'
 		/// in the command text for each of the arguments and then executes that command.
+		/// It returns each row of the result using the mapping automatically generated for
+		/// the given type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="tableName">
+		/// The table name to use for the mapping.
+		/// </param>
+		/// <param name="query">
+		/// The fully escaped SQL.
+		/// </param>
+		/// <param name="args">
+		/// Arguments to substitute for the occurences of '?' in the query.
+		/// </param>
+		/// <returns>
+		/// An enumerable with one result for each row returned by the query.
+		/// </returns>
+		public List<T> Query<T>(string tableName, string query, params object[] args) where T : new()
+		{
+			var cmd = CreateCommand(query, args);
+			return cmd.ExecuteQuery<T>(tableName);
+		}
+
+		/// <summary>
+		/// Creates a SQLiteCommand given the command text (SQL) with arguments. Place a '?'
+		/// in the command text for each of the arguments and then executes that command.
 		/// It returns the first column of each row of the result.
 		/// </summary>
 		/// <param name="query">
@@ -1318,7 +1345,7 @@ namespace SQLite
 		/// A queryable object that is able to translate Where, OrderBy, and Take
 		/// queries into native SQL.
 		/// </returns>
-		public TableQuery<T> Table<T>(string tableName = "") where T : new()
+		public TableQuery<T> Table<T>(string tableName = null) where T : new()
 		{
 			return new TableQuery<T>(this, tableName);
 		}
@@ -1335,7 +1362,7 @@ namespace SQLite
 		/// The object with the given primary key. Throws a not found exception
 		/// if the object is not found.
 		/// </returns>
-		public T Get<T>(object pk, string tableName = "") where T : new()
+		public T Get<T>(object pk, string tableName = null) where T : new()
 		{
 			var map = GetMapping(typeof(T), tableName);
 			return Query<T>(map.GetByPrimaryKeySql, pk).First();
@@ -1372,7 +1399,7 @@ namespace SQLite
 		/// The object that matches the given predicate. Throws a not found exception
 		/// if the object is not found.
 		/// </returns>
-		public T Get<T>(Expression<Func<T, bool>> predicate, string tableName = "") where T : new()
+		public T Get<T>(Expression<Func<T, bool>> predicate, string tableName = null) where T : new()
 		{
 			return Table<T>(tableName).Where(predicate).First();
 		}
@@ -1389,7 +1416,7 @@ namespace SQLite
 		/// The object with the given primary key or null
 		/// if the object is not found.
 		/// </returns>
-		public T Find<T>(object pk, string tableName = "") where T : new()
+		public T Find<T>(object pk, string tableName = null) where T : new()
 		{
 			var map = GetMapping<T>(tableName);
 			return Query<T>(map.GetByPrimaryKeySql, pk).FirstOrDefault();
@@ -1426,7 +1453,7 @@ namespace SQLite
 		/// The object that matches the given predicate or null
 		/// if the object is not found.
 		/// </returns>
-		public T Find<T>(Expression<Func<T, bool>> predicate, string tableName = "") where T : new()
+		public T Find<T>(Expression<Func<T, bool>> predicate, string tableName = null) where T : new()
 		{
 			return Table<T>(tableName).Where(predicate).FirstOrDefault();
 		}
@@ -1448,6 +1475,28 @@ namespace SQLite
 		public T FindWithQuery<T>(string query, params object[] args) where T : new()
 		{
 			return Query<T>(query, args).FirstOrDefault();
+		}
+
+		/// <summary>
+		/// Attempts to retrieve the first object that matches the query from the table
+		/// associated with the specified type.
+		/// </summary>
+		/// /// <param name="tableName">
+		/// The name of the table.
+		/// </param>
+		/// <param name="query">
+		/// The fully escaped SQL.
+		/// </param>
+		/// <param name="args">
+		/// Arguments to substitute for the occurences of '?' in the query.
+		/// </param>
+		/// <returns>
+		/// The object that matches the given predicate or null
+		/// if the object is not found.
+		/// </returns>
+		public T FindWithQuery<T>(string tableName, string query, params object[] args) where T : new()
+		{
+			return Query<T>(tableName, query, args).FirstOrDefault();
 		}
 
 		/// <summary>
@@ -1870,7 +1919,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows added to the table.
 		/// </returns>
-		public int Insert(object obj, string tableName = "")
+		public int Insert(object obj, string tableName = null)
 		{
 			if (obj == null)
 			{
@@ -1893,7 +1942,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows modified.
 		/// </returns>
-		public int InsertOrReplace(object obj, string tableName = "")
+		public int InsertOrReplace(object obj, string tableName = null)
 		{
 			if (obj == null)
 			{
@@ -1916,7 +1965,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows added to the table.
 		/// </returns>
-		public int Insert(object obj, Type objType, string tableName = "")
+		public int Insert(object obj, Type objType, string tableName = null)
 		{
 			return Insert(obj, "", objType, tableName);
 		}
@@ -1938,7 +1987,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows modified.
 		/// </returns>
-		public int InsertOrReplace(object obj, Type objType, string tableName = "")
+		public int InsertOrReplace(object obj, Type objType, string tableName = null)
 		{
 			return Insert(obj, "OR REPLACE", objType, tableName);
 		}
@@ -1957,7 +2006,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows added to the table.
 		/// </returns>
-		public int Insert(object obj, string extra, string tableName = "")
+		public int Insert(object obj, string extra, string tableName = null)
 		{
 			if (obj == null)
 			{
@@ -1983,7 +2032,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows added to the table.
 		/// </returns>
-		public int Insert(object obj, string extra, Type objType, string tableName = "")
+		public int Insert(object obj, string extra, Type objType, string tableName = null)
 		{
 			if (obj == null || objType == null)
 			{
@@ -2113,7 +2162,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows updated.
 		/// </returns>
-		public int Update(object obj, string tableName = "")
+		public int Update(object obj, string tableName = null)
 		{
 			if (obj == null)
 			{
@@ -2136,7 +2185,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows updated.
 		/// </returns>
-		public int Update(object obj, Type objType, string tableName = "")
+		public int Update(object obj, Type objType, string tableName = null)
 		{
 			int rowsAffected = 0;
 			if (obj == null || objType == null)
@@ -2237,7 +2286,7 @@ namespace SQLite
 		/// <returns>
 		/// The number of rows deleted.
 		/// </returns>
-		public int Delete(object objectToDelete, string tableName = "")
+		public int Delete(object objectToDelete, string tableName = null)
 		{
 			var map = GetMapping(Orm.GetType(objectToDelete), tableName);
 			var pk = map.PK;
@@ -2264,7 +2313,7 @@ namespace SQLite
 		/// <typeparam name='T'>
 		/// The type of object.
 		/// </typeparam>
-		public int Delete<T>(object primaryKey, string tableName = "")
+		public int Delete<T>(object primaryKey, string tableName = null)
 		{
 			return Delete(primaryKey, GetMapping<T>(tableName));
 		}
@@ -2306,7 +2355,7 @@ namespace SQLite
 		/// <typeparam name='T'>
 		/// The type of objects to delete.
 		/// </typeparam>
-		public int DeleteAll<T>(string tableName = "")
+		public int DeleteAll<T>(string tableName = null)
 		{
 			var map = GetMapping<T>(tableName);
 			return DeleteAll(map);
@@ -2745,7 +2794,7 @@ namespace SQLite
 		readonly Column[] _insertColumns;
 		readonly Column[] _insertOrReplaceColumns;
 
-		public TableMapping(Type type, CreateFlags createFlags = CreateFlags.None, string tableName = "")
+		public TableMapping(Type type, CreateFlags createFlags = CreateFlags.None, string tableName = null)
 		{
 			MappedType = type;
 			CreateFlags = createFlags;
@@ -3305,12 +3354,12 @@ namespace SQLite
 			throw SQLiteException.New(r, SQLite3.GetErrmsg(_conn.Handle));
 		}
 
-		public IEnumerable<T> ExecuteDeferredQuery<T>(string tableName = "")
+		public IEnumerable<T> ExecuteDeferredQuery<T>(string tableName = null)
 		{
 			return ExecuteDeferredQuery<T>(_conn.GetMapping<T>(tableName));
 		}
 
-		public List<T> ExecuteQuery<T>(string tableName = "")
+		public List<T> ExecuteQuery<T>(string tableName = null)
 		{
 			return ExecuteDeferredQuery<T>(_conn.GetMapping<T>(tableName)).ToList();
 		}
@@ -4225,7 +4274,7 @@ namespace SQLite
 			Table = table;
 		}
 
-		public TableQuery(SQLiteConnection conn, string tableName = "")
+		public TableQuery(SQLiteConnection conn, string tableName = null)
 		{
 			Connection = conn;
 			Table = Connection.GetMapping<T>(tableName);
