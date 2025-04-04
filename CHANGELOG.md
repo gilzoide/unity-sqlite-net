@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.2...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.3...HEAD)
+
+
+## [1.2.3](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.3)
 ### Fixed
 - Support for Android 15 devices using 16KB memory page size (reference: https://developer.android.com/guide/practices/page-sizes)
 
