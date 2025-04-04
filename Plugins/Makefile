@@ -59,7 +59,7 @@ ifndef ANDROID_NDK_ROOT
 endif
 
 lib/android/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
-lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared -lm
+lib/android/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared -lm -Wl,-z,max-page-size=16384
 lib/android/%/libgilzoide-sqlite-net.so: lib/android/%/sqlite3.o~ check-ndk-root | lib/android/%
 	$(CC) -o $@ $< $(LINKFLAGS)
 
