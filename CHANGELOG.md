@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.3...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.4...HEAD)
+
+
+## [1.2.4](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.4)
 ### Fixed
 - Crash when used in the Unity Editor in Linux platform
 
