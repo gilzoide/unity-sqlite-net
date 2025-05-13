@@ -39,7 +39,17 @@ lib/windows/%/gilzoide-sqlite-net.dll: lib/windows/%/sqlite3.o~ | lib/windows/%
 
 # Linux
 lib/linux/%/libgilzoide-sqlite-net.so: CFLAGS += -fPIC
-lib/linux/%/libgilzoide-sqlite-net.so: LINKFLAGS += -shared -lm
+
+# Note: The line "-Wl,-Bsymbolic" prevents the dynamic linker from interposing the plugin’s calls to its 
+# own exported symbols with identically-named symbols in other loaded libraries (like /usr/lib/libsqlite3.so.0).
+# And the line "-Wl,-rpath,'$$ORIGIN'" ensures the loader finds the .so’s dependencies (if any) in the same 
+# folder as the plugin itself. Without these adjustments using the SQLite .so in the Unity editor will cause the
+# editor to crash.
+lib/linux/%/libgilzoide-sqlite-net.so: LINKFLAGS += \
+    -shared -lm \
+     -Wl,-Bsymbolic \
+     -Wl,-rpath,'$$ORIGIN'
+
 lib/linux/%/libgilzoide-sqlite-net.so: lib/linux/%/sqlite3.o~ | lib/linux/%
 	$(CC) -o $@ $^ $(LINKFLAGS)
 
