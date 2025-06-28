@@ -18,7 +18,7 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
 - [SQLiteAsset](Runtime/SQLiteAsset.cs): read-only SQLite database Unity assets.
   + Files with the extensions ".sqlite", ".sqlite2" and ".sqlite3" will be imported as SQLite database assets.
   + ".csv" files can be imported as SQLite database assets by changing the importer to `SQLite.Editor.SQLiteAssetCsvImporter` in the Inspector.
-  + ".sql" files are imported as Text assets by default, but can be imported as SQLite database assets by changing the importer to `SQLite.Editor.SQLAssetDatabaseImporter`.
+  + ".sql" files are imported as Text assets by default, but can be imported as SQLite database assets by changing the importer to `SQLite.Editor.SQLScriptDatabaseImporter`.
   + Use the `CreateConnection()` method for connecting to the database provided by the asset.
     Make sure to `Dispose()` of any connections you create.
   + SQLite assets may be loaded from Streaming Assets folder or from memory, depending on the value of their "Streaming Assets Path" property.

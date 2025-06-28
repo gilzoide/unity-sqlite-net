@@ -26,7 +26,7 @@ using UnityEngine;
 namespace SQLite.Editor
 {
     [ScriptedImporter(0, null, new[] { "sql" })]
-    public class SQLAssetDatabaseImporter : ScriptedImporter
+    public class SQLScriptDatabaseImporter : ScriptedImporter
     {
         [Header("SQLite asset options")]
         [Tooltip("Flags controlling how the SQLite connection should be opened. 'ReadWrite' and 'Create' flags will be ignored, since SQLite assets are read-only.")]

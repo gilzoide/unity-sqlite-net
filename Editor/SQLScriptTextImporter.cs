@@ -26,7 +26,7 @@ using UnityEngine;
 namespace SQLite.Editor
 {
     [ScriptedImporter(0, "sql")]
-    public class SQLAssetTextImporter : ScriptedImporter
+    public class SQLScriptTextImporter : ScriptedImporter
     {
         public override void OnImportAsset(AssetImportContext ctx)
         {
