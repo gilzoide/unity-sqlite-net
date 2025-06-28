@@ -7,6 +7,8 @@
   ".csv" files can be imported as SQLite database assets by changing the importer to `SQLite.Editor.Csv.SQLiteAssetCsvImporter` in the Inspector.
 - `SQLiteConnection.SerializeToAsset` extension method for serializing a database to an instance of `SQLiteAsset`.
 - `SQLiteConnection.ImportCsvToTable` extension method for importing a CSV text stream as a new table inside the database.
+- Support for importing ".sql" files as either a `TextAsset` or a `SQLiteAsset`.
+- `SQLiteConnection.ExecuteScript` extension method for executing a SQL script with multiple statements with a single call.
 
 ### Changed
 - Update SQLite to 3.50.1

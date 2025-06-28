@@ -69,6 +69,9 @@ namespace SQLite
         [DllImport(LibraryPath, EntryPoint = "sqlite3_column_bytes16", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ColumnBytes16(IntPtr stmt, int index);
 
+        [DllImport(LibraryPath, EntryPoint = "sqlite3_exec", CallingConvention = CallingConvention.Cdecl)]
+        public static extern Result Exec(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string sql, IntPtr callback, IntPtr userdata, IntPtr errorMessagePtr);
+
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport(LibraryPath, CallingConvention = CallingConvention.Cdecl)]
         public static extern int idbvfs_register(int makeDefault);
