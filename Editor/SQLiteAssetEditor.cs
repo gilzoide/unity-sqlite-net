@@ -29,18 +29,6 @@ namespace SQLite.Editor
     [CanEditMultipleObjects]
     public class SQLiteAssetEditor : UnityEditor.Editor
     {
-        private class TableInfo
-        {
-            public string Name { get; set; }
-            public string Sql { get; set; }
-
-            public void Deconstruct(out string name, out string sql)
-            {
-                name = Name;
-                sql = Sql;
-            }
-        }
-
         [SerializeField] private List<string> _expandedTables = new List<string>();
 
         public override void OnInspectorGUI()
@@ -63,7 +51,7 @@ namespace SQLite.Editor
             {
                 EditorGUILayout.LabelField("Tables", EditorStyles.boldLabel);
                 EditorGUI.indentLevel++;
-                foreach ((string name, string sql) in db.Query<TableInfo>("SELECT name, sql FROM SQLite_schema WHERE type = 'table'"))
+                foreach ((string name, string sql) in db.Query<(string, string)>("SELECT name, sql FROM SQLite_schema WHERE type = 'table'"))
                 {
                     bool previouslyExpanded = _expandedTables.Contains(name);
                     bool expanded = EditorGUILayout.Foldout(previouslyExpanded, name, true);
