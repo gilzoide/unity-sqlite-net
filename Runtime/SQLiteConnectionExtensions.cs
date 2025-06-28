@@ -24,10 +24,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using SQLite.Csv;
-#if UNITY_2018_1_OR_NEWER
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-#endif
 using UnityEngine;
 
 namespace SQLite
@@ -78,7 +76,6 @@ namespace SQLite
             return db;
         }
 
-#if UNITY_2018_1_OR_NEWER
         public static SQLiteConnection Deserialize(this SQLiteConnection db, NativeArray<byte> buffer, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
         {
             return Deserialize(db, buffer, buffer.Length, schema, flags);
@@ -97,9 +94,7 @@ namespace SQLite
             }
             return db;
         }
-#endif
 
-#if UNITY_2021_2_OR_NEWER
         public static SQLiteConnection Deserialize(this SQLiteConnection db, ReadOnlySpan<byte> buffer, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
         {
             return Deserialize(db, buffer, buffer.Length, schema, flags);
@@ -121,7 +116,6 @@ namespace SQLite
             }
             return db;
         }
-#endif
 
         /// <summary>
         /// Import a CSV data stream into the table named <paramref name="tableName"/> inside the database.
