@@ -1,5 +1,6 @@
 // Compile-time definitions used to build SQLite
 // This is a separate file so that IL2CPP can use the same flags on all platforms
+// Feel free to change this based on your needs
 #define SQLITE_USE_URI 1
 #define SQLITE_DQS 0 
 #define SQLITE_DEFAULT_MEMSTATUS 0 
