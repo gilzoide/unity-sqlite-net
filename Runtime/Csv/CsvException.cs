@@ -19,26 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using System.Threading.Tasks;
-using UnityEngine;
+using System;
 
-namespace SQLite
+namespace SQLite.Csv
 {
-    public static class SQLiteAsyncExtensions
+    public class CsvException : Exception
     {
-#if UNITY_WEBGL
-        // WebGL builds cannot use background threads, so use a
-        // TaskScheduler that executes tasks on Unity's main thread.
-        public static TaskScheduler TaskScheduler { get; private set; }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void InitializeTaskScheduler()
-        {
-            TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        }
-#else
-        // On all other platforms, use the default TaskScheduler
-        public static TaskScheduler TaskScheduler => TaskScheduler.Default;
-#endif
+        public CsvException(string message) : base(message) {}
     }
 }

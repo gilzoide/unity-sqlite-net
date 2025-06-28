@@ -2,6 +2,11 @@
 ## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.4...HEAD)
 ### Added
 - Support for encrypting / decrypting databases by using [SQLite3 Multiple Ciphers](https://utelle.github.io/SQLite3MultipleCiphers/) implementation
+- [SQLiteAsset](Runtime/SQLiteAsset.cs): read-only SQLite database Unity assets.
+  Files with the extensions ".sqlite", ".sqlite2" and ".sqlite3" will be imported as SQLite database assets.
+  ".csv" files can be imported as SQLite database assets by changing the importer to `SQLite.Editor.Csv.SQLiteAssetCsvImporter` in the Inspector.
+- `SQLiteConnection.SerializeToAsset` extension method for serializing a database to an instance of `SQLiteAsset`.
+- `SQLiteConnection.ImportCsvToTable` extension method for importing a CSV text stream as a new table inside the database.
 
 ### Changed
 - Update SQLite to 3.50.1

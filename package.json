@@ -14,5 +14,6 @@
       "description": "Demonstrates a simple REPL for SQL statements.",
       "path": "Samples~/REPL"
     }
-  ]
+  ],
+  "unity": "2021.2"
 }

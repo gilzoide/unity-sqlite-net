@@ -9,17 +9,20 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
   + Both synchronous and asynchronous APIs are available
   + `SQLiteConnection.Serialize` extension method for serializing a database to `byte[]` (reference: [SQLite Serialization](https://www.sqlite.org/c3ref/serialize.html)).
   + `SQLiteConnection.Deserialize` extension method for deserializing memory (`byte[]`, `NativeArray<byte>` or `ReadOnlySpan<byte>`) into an open database (reference: [SQLite Deserialization](https://www.sqlite.org/c3ref/deserialize.html)).
+  + `SQLiteConnection.ImportCsvToTable` extension method for importing a CSV text stream as a new table inside the database.
 - [SQLite3 Multiple Ciphers 2.1.3](https://github.com/utelle/SQLite3MultipleCiphers/releases/tag/v2.1.3) (based on [SQLite 3.50.1](https://sqlite.org/releaselog/3_50_1.html))
   + Supports encrypted databases
   + Enabled modules: [R\*Tree](https://sqlite.org/rtree.html), [Geopoly](https://sqlite.org/geopoly.html), [FTS5](https://sqlite.org/fts5.html), [Built-In Math Functions](https://www.sqlite.org/lang_mathfunc.html)
   + Supports Windows, Linux, macOS, WebGL, Android, iOS, tvOS and visionOS platforms
   + Supports persisting data in WebGL builds by using a [custom VFS backed by Indexed DB](https://github.com/gilzoide/idbvfs).
-
-
-## Optional packages
-- [SQLite Asset](https://github.com/gilzoide/unity-sqlite-asset): read-only SQLite database assets for Unity with scripted importer for ".sqlite", ".sqlite2" and ".sqlite3" files
-- [SQLite Asset - CSV](https://github.com/gilzoide/unity-sqlite-asset-csv): easily import ".csv" files as read-only SQLite database assets
-
+- [SQLiteAsset](Runtime/SQLiteAsset.cs): read-only SQLite database Unity assets.
+  + Files with the extensions ".sqlite", ".sqlite2" and ".sqlite3" will be imported as SQLite database assets.
+  + ".csv" files can be imported as SQLite database assets by changing the importer to `SQLite.Editor.Csv.SQLiteAssetCsvImporter` in the Inspector.
+  + Use the `CreateConnection()` method for connecting to the database provided by the asset.
+    Make sure to `Dispose()` of any connections you create.
+  + SQLite assets may be loaded from Streaming Assets folder or from memory, depending on the value of their "Streaming Assets Path" property.
+    + **Note**: Android and WebGL platforms don't support loading SQLite databases from Streaming Assets and will always load them in memory.
+  + `SQLiteConnection.SerializeToAsset` extension method for serializing a database to an instance of `SQLiteAsset`.
 
 ## How to install
 Either:
@@ -103,6 +106,8 @@ SQLite-net for Unity first-party code is licensed under the [MIT license](LICENS
 Third-party code:
 - SQLite-net: [MIT license](Runtime/sqlite-net/LICENSE.txt)
 - SQLite3 Multiple Ciphers: [MIT license](https://github.com/utelle/SQLite3MultipleCiphers/blob/main/LICENSE)
+
+Database icons from [Solar Icons Set](https://www.figma.com/community/file/1166831539721848736/solar-icons-set), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 
 ## Modifications made to SQLite-net source code
