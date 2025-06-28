@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 #endif
+using UnityEngine;
 
 namespace SQLite
 {
@@ -47,6 +48,16 @@ namespace SQLite
             {
                 SQLite3.Free(buffer);
             }
+        }
+
+        public static SQLiteAsset SerializeToAsset(this SQLiteConnection db, string schema = null, SQLiteOpenFlags openFlags = SQLiteOpenFlags.ReadOnly, bool storeDateTimeAsTicks = true, string streamingAssetsPath = null)
+        {
+            SQLiteAsset asset = ScriptableObject.CreateInstance<SQLiteAsset>();
+            asset.Bytes = db.Serialize(schema);
+            asset.OpenFlags = openFlags;
+            asset.StoreDateTimeAsTicks = storeDateTimeAsTicks;
+            asset.StreamingAssetsPath = streamingAssetsPath;
+            return asset;
         }
 
         public static SQLiteConnection Deserialize(this SQLiteConnection db, byte[] buffer, string schema = null, SQLite3.DeserializeFlags flags = SQLite3.DeserializeFlags.None)
