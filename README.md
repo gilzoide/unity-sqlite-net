@@ -14,7 +14,13 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
   + Enabled modules: [R\*Tree](https://sqlite.org/rtree.html), [Geopoly](https://sqlite.org/geopoly.html), [FTS5](https://sqlite.org/fts5.html), [Built-In Math Functions](https://www.sqlite.org/lang_mathfunc.html)
   + Supports Windows, Linux, macOS, WebGL, Android, iOS, tvOS and visionOS platforms
   + Supports persisting data in WebGL builds by using a [custom VFS backed by Indexed DB](https://github.com/gilzoide/idbvfs).
-
+- [SQLiteAsset](Runtime/SQLiteAsset.cs): read-only SQLite database Unity assets.
+  + Files with the extensions ".sqlite", ".sqlite2" and ".sqlite3" will be imported as SQLite database assets.
+  + Use the `CreateConnection()` method for connecting to the database provided by the asset.
+    Make sure to `Dispose()` of any connections you create.
+  + SQLite assets may be loaded from Streaming Assets folder or from memory, depending on the value of their "Streaming Assets Path" property.
+  + **Warning**: Android and WebGL platforms don't support loading SQLite databases from Streaming Assets and will always load them in memory.
+  + `SQLiteConnection.SerializeToAsset` extension method for serializing a database to an instance of `SQLiteAsset`.
 
 ## Optional packages
 - [SQLite Asset](https://github.com/gilzoide/unity-sqlite-asset): read-only SQLite database assets for Unity with scripted importer for ".sqlite", ".sqlite2" and ".sqlite3" files
