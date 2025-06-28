@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.4...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.3.0...HEAD)
+
+
+## [1.3.0](https://github.com/gilzoide/unity-sqlite-net/tree/1.3.0)
 ### Added
 - Support for encrypting / decrypting databases by using [SQLite3 Multiple Ciphers](https://utelle.github.io/SQLite3MultipleCiphers/) implementation
 - [SQLiteAsset](Runtime/SQLiteAsset.cs): read-only SQLite database Unity assets.
