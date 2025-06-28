@@ -18,3 +18,5 @@
 #define SQLITE_ENABLE_GEOPOLY 1
 #define SQLITE_ENABLE_FTS5 1
 #define SQLITE_ENABLE_HIDDEN_COLUMNS 1
+// Default temporary storage to in-memory, since TEMP databases are not encrypted
+#define SQLITE_TEMP_STORE 2

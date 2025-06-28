@@ -3,6 +3,7 @@ ANDROID_NDK_ROOT ?=
 # macOS code signing setup
 CODESIGN ?= codesign
 MACOS_CODESIGN_SIGNATURE ?=
+MACOS_VERSION_MIN ?= 11.0
 # Download GitHub Action releases
 GITHUB_CLI_BIN ?= gh
 GITHUB_REPO ?= gilzoide/unity-sqlite-net
@@ -49,8 +50,8 @@ lib/linux/%/libgilzoide-sqlite-net.so: lib/linux/%/sqlite3.o~ | lib/linux/%
 	$(CC) -o $@ $^ $(LINKFLAGS)
 
 # macOS
-lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isysroot $(shell xcrun --show-sdk-path --sdk macosx)
-lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared -arch arm64 -arch x86_64
+lib/macos/libgilzoide-sqlite-net.dylib: CFLAGS += -arch arm64 -arch x86_64 -isysroot $(shell xcrun --show-sdk-path --sdk macosx) -mmacosx-version-min=$(MACOS_VERSION_MIN)
+lib/macos/libgilzoide-sqlite-net.dylib: LINKFLAGS += -shared -arch arm64 -arch x86_64 -framework Security -mmacosx-version-min=$(MACOS_VERSION_MIN)
 lib/macos/libgilzoide-sqlite-net.dylib: lib/macos/sqlite3.o~ | lib/macos
 	$(CC) -o $@ $^ $(LINKFLAGS)
 ifdef MACOS_CODESIGN_SIGNATURE
