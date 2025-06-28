@@ -1,5 +1,12 @@
 # Changelog
 ## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.2.4...HEAD)
+### Added
+- Support for encrypting / decrypting databases by using [SQLite3 Multiple Ciphers](https://utelle.github.io/SQLite3MultipleCiphers/) implementation
+
+### Changed
+- Update SQLite to 3.50.1
+- Update NDK version used to build Android binaries to r27c
+- Specify minimum macOS version to 11.0 when building dylib
 
 
 ## [1.2.4](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.4)
