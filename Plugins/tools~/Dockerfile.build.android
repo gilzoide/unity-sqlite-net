@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM debian:12-slim
 
-ARG NDK_VERSION=r26c
+ARG NDK_VERSION=r27c
 
 RUN apt-get -qq update \
     && apt-get -qq install -y --no-install-recommends \
