@@ -14,6 +14,7 @@
 - Update SQLite to 3.50.1
 - Update NDK version used to build Android binaries to r27c
 - Specify minimum macOS version to 11.0 when building dylib
+- Minimal Unity version required by this package is now 2021.2
 
 
 ## [1.2.4](https://github.com/gilzoide/unity-sqlite-net/tree/1.2.4)
