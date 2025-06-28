@@ -17,7 +17,7 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
   + Supports persisting data in WebGL builds by using a [custom VFS backed by Indexed DB](https://github.com/gilzoide/idbvfs).
 - [SQLiteAsset](Runtime/SQLiteAsset.cs): read-only SQLite database Unity assets.
   + Files with the extensions ".sqlite", ".sqlite2" and ".sqlite3" will be imported as SQLite database assets.
-  + ".csv" files can be imported as SQLite database assets by changing the importer to `SQLite.Editor.Csv.SQLiteAssetCsvImporter` in the Inspector.
+  + ".csv" files can be imported as SQLite database assets by changing the importer to `SQLite.Editor.SQLiteAssetCsvImporter` in the Inspector.
   + ".sql" files are imported as Text assets by default, but can be imported as SQLite database assets by changing the importer to `SQLite.Editor.SQLAssetDatabaseImporter`.
   + Use the `CreateConnection()` method for connecting to the database provided by the asset.
     Make sure to `Dispose()` of any connections you create.

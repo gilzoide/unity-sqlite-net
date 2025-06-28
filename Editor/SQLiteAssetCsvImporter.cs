@@ -24,7 +24,7 @@ using SQLite.Csv;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
-namespace SQLite.Editor.Csv
+namespace SQLite.Editor
 {
     [ScriptedImporter(0, null, new[] { "csv" })]
     public class SQLiteAssetCsvImporter : ScriptedImporter
