@@ -117,6 +117,15 @@ namespace SQLite
             return db;
         }
 
+        public static void ExecuteScript(this SQLiteConnection db, string sql)
+        {
+            SQLite3.Result result = SQLite3.Exec(db.Handle, sql, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            if (result != SQLite3.Result.OK)
+            {
+                throw SQLiteException.New(result, SQLite3.GetErrmsg(db.Handle));
+            }
+        }
+
         /// <summary>
         /// Import a CSV data stream into the table named <paramref name="tableName"/> inside the database.
         /// The table will be created if it doesn't exist yet.
