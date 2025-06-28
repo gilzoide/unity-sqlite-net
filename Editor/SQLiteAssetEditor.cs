@@ -46,20 +46,18 @@ namespace SQLite.Editor
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            EditorGUILayout.Space();
-
-            using (new EditorGUI.DisabledScope(true))
-            {
-                EditorGUILayout.TextField("Database size in bytes", EditorUtility.FormatBytes(((SQLiteAsset) target).Bytes.Length));
-            }
-
             if (serializedObject.isEditingMultipleObjects)
             {
                 return;
             }
 
             EditorGUILayout.Space();
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUILayout.TextField("Database size in bytes", EditorUtility.FormatBytes(((SQLiteAsset) target).Bytes.Length));
+            }
 
+            EditorGUILayout.Space();
             using (new EditorGUI.DisabledScope(true))
             using (var db = ((SQLiteAsset) target).CreateConnection())
             {
