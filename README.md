@@ -104,6 +104,8 @@ Third-party code:
 - SQLite-net: [MIT license](Runtime/sqlite-net/LICENSE.txt)
 - SQLite3 Multiple Ciphers: [MIT license](https://github.com/utelle/SQLite3MultipleCiphers/blob/main/LICENSE)
 
+Database icons from [Solar Icons Set](https://www.figma.com/community/file/1166831539721848736/solar-icons-set), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
 
 ## Modifications made to SQLite-net source code
 - The value of `LibraryPath` was changed from `sqlite3` to `__Internal` in WebGL/iOS/tvOS/visionOS builds and `gilzoide-sqlite-net` for other platforms.
