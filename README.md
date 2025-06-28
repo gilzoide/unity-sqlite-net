@@ -21,7 +21,7 @@ This package provides the excelent [SQLite-net](https://github.com/praeclarum/sq
   + Use the `CreateConnection()` method for connecting to the database provided by the asset.
     Make sure to `Dispose()` of any connections you create.
   + SQLite assets may be loaded from Streaming Assets folder or from memory, depending on the value of their "Streaming Assets Path" property.
-  + **Warning**: Android and WebGL platforms don't support loading SQLite databases from Streaming Assets and will always load them in memory.
+    + **Note**: Android and WebGL platforms don't support loading SQLite databases from Streaming Assets and will always load them in memory.
   + `SQLiteConnection.SerializeToAsset` extension method for serializing a database to an instance of `SQLiteAsset`.
 
 ## How to install
