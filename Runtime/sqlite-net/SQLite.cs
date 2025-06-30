@@ -4576,7 +4576,7 @@ namespace SQLite
 			Serialized = 3
 		}
 
-#if !UNITY_EDITOR && (UNITY_WEBGL || UNITY_IOS || UNITY_TVOS || UNITY_VISIONOS)
+#if !UNITY_EDITOR && (UNITY_WEBGL || UNITY_ANDROID || UNITY_IOS || UNITY_TVOS || UNITY_VISIONOS)
 		public const string LibraryPath = "__Internal";
 #else
 		public const string LibraryPath = "gilzoide-sqlite-net";

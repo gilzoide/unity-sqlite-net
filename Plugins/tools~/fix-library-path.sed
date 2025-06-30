@@ -5,7 +5,7 @@
 	s/sqlite3/gilzoide-sqlite-net/
 	# Use "__Internal" library path in WebGL builds
 	i\
-#if !UNITY_EDITOR && (UNITY_WEBGL || UNITY_IOS || UNITY_TVOS || UNITY_VISIONOS)
+#if !UNITY_EDITOR && (UNITY_WEBGL || UNITY_ANDROID || UNITY_IOS || UNITY_TVOS || UNITY_VISIONOS)
 	i\
 		public const string LibraryPath = "__Internal";
 	i\
