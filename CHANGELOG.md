@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.3.0...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.3.1...HEAD)
+
+
+## [1.3.1](https://github.com/gilzoide/unity-sqlite-net/tree/1.3.1)
 ### Fixed
 - Mark editor asmdef as editor-only
 
