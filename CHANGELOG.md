@@ -1,5 +1,10 @@
 # Changelog
-## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.3.1...HEAD)
+## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.3.2...HEAD)
+
+
+## [1.3.2](https://github.com/gilzoide/unity-sqlite-net/tree/1.3.2)
+### Fixed
+- Warning about Android libraries not being aligned to 16kb page size
 
 
 ## [1.3.1](https://github.com/gilzoide/unity-sqlite-net/tree/1.3.1)
