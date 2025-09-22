@@ -33,6 +33,7 @@ PluginImporter:
       settings:
         AndroidSharedLibraryType: Executable
         CPU: X86
+        Is16KbAligned: false
   - first:
       Any: 
     second:
