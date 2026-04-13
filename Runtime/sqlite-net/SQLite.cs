@@ -3069,25 +3069,29 @@ namespace SQLite
 				_conn.Tracer?.Invoke ("Executing: " + this);
 			}
 
-			var r = SQLite3.Result.OK;
 			var stmt = Prepare ();
-			r = SQLite3.Step (stmt);
-			Finalize (stmt);
-			if (r == SQLite3.Result.Done) {
-				int rowsAffected = SQLite3.Changes (_conn.Handle);
-				return rowsAffected;
-			}
-			else if (r == SQLite3.Result.Error) {
-				string msg = SQLite3.GetErrmsg (_conn.Handle);
-				throw SQLiteException.New (r, msg);
-			}
-			else if (r == SQLite3.Result.Constraint) {
-				if (SQLite3.ExtendedErrCode (_conn.Handle) == SQLite3.ExtendedResult.ConstraintNotNull) {
-					throw NotNullConstraintViolationException.New (r, SQLite3.GetErrmsg (_conn.Handle));
+			try {
+				// FIX: Use try/finally to ensure Finalize runs, and throw exceptions
+				// BEFORE finally block so GetErrmsg is called while error state is valid.
+				// See: https://github.com/praeclarum/sqlite-net/issues/1041
+				var r = SQLite3.Step (stmt);
+				if (r == SQLite3.Result.Done || r == SQLite3.Result.Row) {
+					int rowsAffected = SQLite3.Changes (_conn.Handle);
+					return rowsAffected;
 				}
+				else if (r == SQLite3.Result.Error) {
+					throw SQLiteException.New (r, SQLite3.GetErrmsg (_conn.Handle));
+				}
+				else if (r == SQLite3.Result.Constraint) {
+					if (SQLite3.ExtendedErrCode (_conn.Handle) == SQLite3.ExtendedResult.ConstraintNotNull) {
+						throw NotNullConstraintViolationException.New (r, SQLite3.GetErrmsg (_conn.Handle));
+					}
+				}
+				throw SQLiteException.New (r, SQLite3.GetErrmsg (_conn.Handle));
 			}
-
-			throw SQLiteException.New (r, SQLite3.GetErrmsg (_conn.Handle));
+			finally {
+				Finalize (stmt);
+			}
 		}
 
 		public IEnumerable<T> ExecuteDeferredQuery<T> ()
@@ -3748,8 +3752,6 @@ namespace SQLite
 				Connection.Tracer?.Invoke ("Executing: " + CommandText);
 			}
 
-			var r = SQLite3.Result.OK;
-
 			if (!Initialized) {
 				Statement = SQLite3.Prepare2 (Connection.Handle, CommandText);
 				Initialized = true;
@@ -3761,25 +3763,28 @@ namespace SQLite
 					SQLiteCommand.BindParameter (Statement, i + 1, source[i], Connection.StoreDateTimeAsTicks, Connection.DateTimeStringFormat, Connection.StoreTimeSpanAsTicks);
 				}
 			}
-			r = SQLite3.Step (Statement);
 
-			if (r == SQLite3.Result.Done) {
-				int rowsAffected = SQLite3.Changes (Connection.Handle);
-				SQLite3.Reset (Statement);
-				return rowsAffected;
-			}
-			else if (r == SQLite3.Result.Error) {
-				string msg = SQLite3.GetErrmsg (Connection.Handle);
-				SQLite3.Reset (Statement);
-				throw SQLiteException.New (r, msg);
-			}
-			else if (r == SQLite3.Result.Constraint && SQLite3.ExtendedErrCode (Connection.Handle) == SQLite3.ExtendedResult.ConstraintNotNull) {
-				SQLite3.Reset (Statement);
-				throw NotNullConstraintViolationException.New (r, SQLite3.GetErrmsg (Connection.Handle));
-			}
-			else {
-				SQLite3.Reset (Statement);
+			try {
+				// FIX: Use try/finally to ensure Reset runs, and throw exceptions
+				// BEFORE finally block so GetErrmsg is called while error state is valid.
+				// See: https://github.com/praeclarum/sqlite-net/issues/1041
+				var r = SQLite3.Step (Statement);
+				if (r == SQLite3.Result.Done || r == SQLite3.Result.Row) {
+					int rowsAffected = SQLite3.Changes (Connection.Handle);
+					return rowsAffected;
+				}
+				else if (r == SQLite3.Result.Error) {
+					throw SQLiteException.New (r, SQLite3.GetErrmsg (Connection.Handle));
+				}
+				else if (r == SQLite3.Result.Constraint) {
+					if (SQLite3.ExtendedErrCode (Connection.Handle) == SQLite3.ExtendedResult.ConstraintNotNull) {
+						throw NotNullConstraintViolationException.New (r, SQLite3.GetErrmsg (Connection.Handle));
+					}
+				}
 				throw SQLiteException.New (r, SQLite3.GetErrmsg (Connection.Handle));
+			}
+			finally {
+				SQLite3.Reset (Statement);
 			}
 		}
 
