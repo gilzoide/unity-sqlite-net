@@ -28,6 +28,8 @@
  *
  * For more information, please refer to <http://unlicense.org/>
  */
+#pragma once
+
 #ifdef __cplusplus
 extern "C" {
 #endif

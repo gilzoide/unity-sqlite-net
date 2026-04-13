@@ -72,6 +72,19 @@ static void TRACE_LOG(const char *fmt, ...) {
 
 using namespace sqlitevfs;
 
+
+/// Checks whether zName is a path to a regular file
+static bool isRegularFile(const char *zName) {
+	struct stat st;
+	if (stat(zName, &st) == 0) {
+		if (S_ISREG(st.st_mode)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 class IdbPage {
 public:
 	IdbPage() {}
@@ -90,8 +103,7 @@ public:
 	}
 
 	bool exists() const {
-		if (FILE *f = fopen(filename.c_str(), "r")) {
-			fclose(f);
+		if (isRegularFile(filename.c_str())) {
 			return true;
 		}
 		else {
@@ -164,11 +176,7 @@ private:
 
 struct IdbFileSize : public IdbPage {
 	IdbFileSize() : IdbPage() {}
-	IdbFileSize(sqlite3_filename file_name, bool autoload = true) : IdbPage(file_name, IDBVFS_SIZE_KEY) {
-		if (autoload) {
-			load();
-		}
-	}
+	IdbFileSize(sqlite3_filename file_name) : IdbPage(file_name, IDBVFS_SIZE_KEY) {}
 
 	void load() {
 		scan_into("%lu", &file_size);
@@ -210,28 +218,49 @@ struct IdbFile : public SQLiteFileImpl {
 	sqlite3_filename file_name;
 	IdbFileSize file_size;
 	std::vector<uint8_t> journal_data;
+	FILE *regular_file;
 	bool is_db;
 
 	IdbFile() {}
-	IdbFile(sqlite3_filename file_name, bool is_db) : file_name(file_name), file_size(file_name), is_db(is_db) {}
+	IdbFile(sqlite3_filename file_name, bool is_db)
+		: file_name(file_name)
+		, file_size(file_name)
+		, is_db(is_db)
+	{
+		if (isRegularFile(file_name)) {
+			regular_file = fopen(file_name, "r+");
+		}
+		else {
+			regular_file = nullptr;
+			file_size.load();
+		}
+	}
 
 	int iVersion() const override {
 		return 1;
 	}
 
 	int xClose() override {
+		if (regular_file) {
+			fclose(regular_file);
+		}
 		return SQLITE_OK;
 	}
 
 	int xRead(void *p, int iAmt, sqlite3_int64 iOfst) override {
 		TRACE_LOG("READ %s %d @ %ld", file_name, iAmt, iOfst);
-		if (iAmt + iOfst > file_size.get()) {
-			TRACE_LOG("  > %d", false);
-			return SQLITE_IOERR_SHORT_READ;
-		}
-
 		int result;
-		if (is_db) {
+		if (regular_file) {
+			fseek(regular_file, iOfst, SEEK_SET);
+			size_t bytes_read = fread(p, 1, iAmt, regular_file);
+			if (bytes_read < iAmt) {
+				result = SQLITE_IOERR_SHORT_READ;
+			}
+			else {
+				result = SQLITE_OK;
+			}
+		}
+		else if (is_db) {
 			result = readDb(p, iAmt, iOfst);
 		}
 		else {
@@ -244,7 +273,17 @@ struct IdbFile : public SQLiteFileImpl {
 	int xWrite(const void *p, int iAmt, sqlite3_int64 iOfst) override {
 		TRACE_LOG("WRITE %s %d @ %ld", file_name, iAmt, iOfst);
 		int result;
-		if (is_db) {
+		if (regular_file) {
+			fseek(regular_file, iOfst, SEEK_SET);
+			size_t stored_bytes = fwrite(p, 1, iAmt, regular_file);
+			if (stored_bytes < iAmt) {
+				result = SQLITE_IOERR_WRITE;
+			}
+			else {
+				result = SQLITE_OK;
+			}
+		}
+		else if (is_db) {
 			result = writeDb(p, iAmt, iOfst);
 		}
 		else {
@@ -256,8 +295,14 @@ struct IdbFile : public SQLiteFileImpl {
 
 	int xTruncate(sqlite3_int64 size) override {
 		TRACE_LOG("TRUNCATE %s to %ld", file_name, size);
-		file_size.set(size);
-		TRACE_LOG("  > %d", true);
+		if (regular_file) {
+			int fd = fileno(regular_file);
+			ftruncate(fd, size);
+		}
+		else {
+			file_size.set(size);
+		}
+		TRACE_LOG("  > %d", SQLITE_OK);
 		return SQLITE_OK;
 	}
 
@@ -269,7 +314,13 @@ struct IdbFile : public SQLiteFileImpl {
 			file.store(journal_data);
 			file_size.set(journal_data.size());
 		}
-		bool success = file_size.sync();
+		bool success;
+		if (regular_file) {
+			success = fflush(regular_file) == 0 && fsync(fileno(regular_file)) == 0;
+		}
+		else {
+			success = file_size.sync();
+		}
 		INLINE_JS({
 			Module.idbvfsSyncfs();
 		});
@@ -279,7 +330,11 @@ struct IdbFile : public SQLiteFileImpl {
 
 	int xFileSize(sqlite3_int64 *pSize) override {
 		TRACE_LOG("FILE SIZE %s", file_name);
-		if (!journal_data.empty()) {
+		if (regular_file) {
+			fseek(regular_file, 0, SEEK_END);
+			*pSize = ftell(regular_file);
+		}
+		else if (!journal_data.empty()) {
 			*pSize = journal_data.size();
 		}
 		else {
@@ -391,7 +446,16 @@ struct IdbVfs : public SQLiteVfsImpl<IdbFile> {
 
 	int xDelete(const char *zName, int syncDir) override {
 		TRACE_LOG("DELETE %s", zName);
-		IdbFileSize file_size(zName, false);
+		if (isRegularFile(zName)) {
+			if (unlink(zName) == 0) {
+				return SQLITE_OK;
+			}
+			else {
+				return SQLITE_IOERR_DELETE;
+			}
+		}
+
+		IdbFileSize file_size(zName);
 		if (!file_size.remove()) {
 			return SQLITE_IOERR_DELETE;
 		}
@@ -412,8 +476,13 @@ struct IdbVfs : public SQLiteVfsImpl<IdbFile> {
 			case SQLITE_ACCESS_EXISTS:
 			case SQLITE_ACCESS_READWRITE:
 			case SQLITE_ACCESS_READ:
-				IdbFileSize file_size(zName, false);
-				*pResOut = file_size.exists();
+				if (isRegularFile(zName)) {
+					*pResOut = 1;
+				}
+				else {
+					IdbFileSize file_size(zName);
+					*pResOut = file_size.exists();
+				}
 				TRACE_LOG("  > %d", *pResOut);
 				return SQLITE_OK;
 		}
