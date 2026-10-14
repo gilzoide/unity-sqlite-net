@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased](https://github.com/gilzoide/unity-sqlite-net/compare/1.3.2...HEAD)
+### Changed
+- Update SQLite3 Multiple Ciphers to 2.5.1 (SQLite 3.53.4)
+
 ### Fixed
 - SQLiteException that were storing "not an error" messages now has the correct error messages
 
